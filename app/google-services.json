@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "201922726889",
+    "project_id": "deliverypds-2024",
+    "storage_bucket": "deliverypds-2024.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:201922726889:android:da5e5d2f6407890bc45978",
+        "android_client_info": {
+          "package_name": "com.codek.deliverypds"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDL4wBjFG4f6RbXl2KrthGfUbh4v-59BsY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
