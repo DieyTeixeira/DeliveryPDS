@@ -1,4 +1,4 @@
-package com.codek.deliverypds.ui.theme
+package com.codek.deliverypds.app.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,4 +1,4 @@
-package com.codek.deliverypds.ui.screen
+package com.codek.deliverypds.ui.login.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
@@ -16,12 +16,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,16 +36,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.codek.deliverypds.R
-import com.codek.deliverypds.ui.state.LoginState
-import com.codek.deliverypds.ui.theme.ColorPri
-import com.codek.deliverypds.ui.viewmodel.LoginViewModel
+import com.codek.deliverypds.ui.login.state.LoginState
+import com.codek.deliverypds.app.theme.ColorPri
+import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
 import androidx.compose.ui.platform.LocalConfiguration
-import com.codek.deliverypds.ui.components.MensagemErro
-import com.codek.deliverypds.ui.components.MensagemSuccess
+import com.codek.deliverypds.ui.login.components.CircleLoading
+import com.codek.deliverypds.ui.login.components.MensagemError
+import com.codek.deliverypds.ui.login.components.MensagemSuccess
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel
+    viewModel: LoginViewModel,
+    onSignInClick: () -> Unit,
+    onSignUpClick: () -> Unit,
+    onLoginSuccess: () -> Unit
 ) {
 
     val screenHeight = LocalConfiguration.current.screenHeightDp
@@ -55,6 +60,9 @@ fun LoginScreen(
     val animateDuration = 500
 
     val loginState by viewModel.loginState.collectAsState()
+    var errorMessage by remember { mutableStateOf("") }
+    var showMessage by remember { mutableStateOf(false) }
+
     var selected by remember { mutableStateOf(false) }
 
     val setLogo by animateDpAsState(if (selected) medScreenHeight else 0.dp, tween(animateDuration))
@@ -69,6 +77,17 @@ fun LoginScreen(
     val roundedShapeDown by animateDpAsState(if (selected) 0.dp else roundedShape, tween(animateDuration))
 
     var messageKey by remember { mutableStateOf(0) }
+    var closeInfo by remember { mutableStateOf(0) }
+
+    LaunchedEffect(loginState) {
+        if (loginState is LoginState.Success) {
+            onLoginSuccess()
+        }
+        if (loginState is LoginState.Error) {
+            errorMessage = (loginState as LoginState.Error).message
+            showMessage = true
+        }
+    }
 
     Box (
         modifier = Modifier
@@ -80,7 +99,19 @@ fun LoginScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = errorMessage,
+                    color = Color.Black
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
             Image(
                 painter = painterResource(id = R.drawable.logo_panelinha),
                 contentDescription = "Logo",
@@ -96,14 +127,17 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp)
-                    .offset(y = setInfo)
-                    .background(Color.LightGray),
+                    .offset(y = setInfo),
                 contentAlignment = Alignment.Center
             ) {
+                if (showMessage) {
+                    messageKey++
+                    MensagemError(errorMessage, messageKey, closeInfo, selected)
+                }
                 when (loginState) {
-                    is LoginState.Loading -> CircularProgressIndicator()
+                    is LoginState.Loading -> CircleLoading(color = Color.White)
                     is LoginState.Success -> MensagemSuccess(messageKey)
-                    is LoginState.Error -> MensagemErro(loginState, messageKey)
+//                    is LoginState.Error -> MensagemError(errorMessage, messageKey, closeInfo, selected)
                     else -> {}
                 }
             }
@@ -137,8 +171,16 @@ fun LoginScreen(
                     SignInScreen(
                         viewModel = viewModel,
                         sizeScreen = halfScreenHeight,
-                        onSignInClick = { messageKey++ },
-                        onSignUpClick = { selected = !selected }
+                        onSignInClick = {
+                            messageKey++
+                            if (loginState != LoginState.Loading) {
+                                onSignInClick()
+                            }
+                        },
+                        onSignUpClick = {
+                            selected = !selected
+                            closeInfo++
+                        }
                     )
                 }
                 this@Column.AnimatedVisibility(
@@ -148,7 +190,14 @@ fun LoginScreen(
                 ) {
                     SignUpScreen(
                         viewModel = viewModel,
-                        onSignInClick = { selected = !selected }
+                        onSignUpClick = {
+                            messageKey++
+                            onSignUpClick()
+                        },
+                        onSignInClick = {
+                            selected = !selected
+                            closeInfo++
+                        }
                     )
                 }
             }

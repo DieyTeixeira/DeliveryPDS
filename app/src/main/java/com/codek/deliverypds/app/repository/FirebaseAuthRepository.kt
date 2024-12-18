@@ -1,7 +1,8 @@
-package com.codek.deliverypds.repository
+package com.codek.deliverypds.app.repository
 
-import com.codek.deliverypds.ui.state.LoginState
+import com.codek.deliverypds.ui.login.state.LoginState
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.tasks.await
 
 class AuthRepository(private val firebaseAuth: FirebaseAuth) {
@@ -9,8 +10,10 @@ class AuthRepository(private val firebaseAuth: FirebaseAuth) {
     // Login com email e senha (Sign In)
     suspend fun signIn(email: String, password: String): LoginState {
         return try {
-            val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
-            LoginState.Success(result.user?.uid ?: "")
+            val authResult = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            LoginState.Success(userId = authResult.user?.uid ?: "")
+        } catch (e: FirebaseAuthException) {
+            LoginState.Error(e.errorCode)
         } catch (e: Exception) {
             LoginState.Error(e.message ?: "Erro desconhecido")
         }

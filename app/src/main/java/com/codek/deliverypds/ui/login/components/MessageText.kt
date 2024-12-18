@@ -1,23 +1,20 @@
-package com.codek.deliverypds.ui.components
+package com.codek.deliverypds.ui.login.components
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,24 +29,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.codek.deliverypds.ui.state.LoginState
-import com.codek.deliverypds.ui.theme.ColorError
-import com.codek.deliverypds.ui.theme.ColorSucess
+import com.codek.deliverypds.ui.login.state.LoginState
+import com.codek.deliverypds.app.theme.ColorError
+import com.codek.deliverypds.app.theme.ColorSucess
+import com.codek.deliverypds.app.theme.DarkColorError
+import com.codek.deliverypds.app.theme.DarkColorSucess
 import kotlinx.coroutines.delay
 
 @Composable
-fun MensagemErro(
-    loginState: LoginState,
-    messageKey: Int
+fun MensagemError(
+    errorMessage: String,
+    messageKey: Int,
+    closeInfo: Int,
+    selected: Boolean
 ) {
     var isErrorVisible by remember { mutableStateOf(false) }
-    val errorMessage = (loginState as LoginState.Error).message
 
     LaunchedEffect(messageKey) {
         isErrorVisible = true
-        delay(5000)
+        delay(2000)
+        isErrorVisible = false
+    }
+
+    LaunchedEffect(closeInfo) {
         isErrorVisible = false
     }
 
@@ -57,12 +62,12 @@ fun MensagemErro(
         visible = isErrorVisible,
         enter = fadeIn(animationSpec = tween(durationMillis = 500)) +
                 slideInVertically(
-                    initialOffsetY = { it },
+                    initialOffsetY = { if (selected) -260 else it },
                     animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
                 ),
         exit = fadeOut(animationSpec = tween(durationMillis = 300)) +
                 slideOutVertically(
-                    targetOffsetY = { it },
+                    targetOffsetY = { if (selected) -260 else it },
                     animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
                 )
     ) {
@@ -70,29 +75,32 @@ fun MensagemErro(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp)
-                .background(
-                    brush = Brush.horizontalGradient(
+                .border(
+                    width = 2.dp,
+                    brush = Brush.verticalGradient(
                         colors = listOf(
-                            ColorError.copy(alpha = 0.0f),
-                            ColorError.copy(alpha = 0.7f),
-                            ColorError, ColorError, ColorError,
-                            ColorError.copy(alpha = 0.7f),
-                            ColorError.copy(alpha = 0.0f)
+                            ColorError,
+                            DarkColorError
                         )
-                    )
+                    ),
+                    shape = RoundedCornerShape(15.dp)
+                )
+                .background(
+                    color = ColorError,
+                    shape = RoundedCornerShape(15.dp)
                 )
         ) {
             Text(
                 text = errorMessage,
                 color = Color.White,
                 style = TextStyle.Default.copy(
-                    fontSize = 14.sp,
+                    fontSize = 18.sp,
                     fontStyle = FontStyle.Italic
                 ),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(5.dp)
+                    .padding(8.dp)
             )
         }
     }
@@ -107,7 +115,7 @@ fun MensagemSuccess(
 
     LaunchedEffect(messageKey) {
         isSuccessVisible = true
-        delay(5000)
+        delay(3000)
         isSuccessVisible = false
     }
 
@@ -128,30 +136,51 @@ fun MensagemSuccess(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp)
-                .background(
-                    brush = Brush.horizontalGradient(
+                .border(
+                    width = 2.dp,
+                    brush = Brush.verticalGradient(
                         colors = listOf(
-                            ColorSucess.copy(alpha = 0.0f),
-                            ColorSucess.copy(alpha = 0.7f),
-                            ColorSucess, ColorSucess, ColorSucess,
-                            ColorSucess.copy(alpha = 0.7f),
-                            ColorSucess.copy(alpha = 0.0f)
+                            ColorSucess,
+                            DarkColorSucess
                         )
-                    )
+                    ),
+                    shape = RoundedCornerShape(15.dp)
+                )
+                .background(
+                    color = ColorSucess,
+                    shape = RoundedCornerShape(15.dp)
                 )
         ) {
             Text(
                 text = successMessage,
                 color = Color.White,
                 style = TextStyle.Default.copy(
-                    fontSize = 14.sp,
+                    fontSize = 18.sp,
                     fontStyle = FontStyle.Italic
                 ),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(5.dp)
+                    .padding(8.dp)
             )
         }
+    }
+}
+
+@Composable
+fun ErrorBoxSignIn(messageError: String, offsetY: Dp) {
+    Box(
+        modifier = Modifier
+            .width(300.dp)
+            .offset(y = offsetY, x = 75.dp)
+            .border(1.dp, ColorError, RoundedCornerShape(10.dp))
+            .background(Color.White, RoundedCornerShape(10.dp))
+            .padding(8.dp, 5.dp)
+    ) {
+        Text(
+            text = messageError,
+            color = ColorError,
+            modifier = Modifier.align(Alignment.Center)
+        )
     }
 }

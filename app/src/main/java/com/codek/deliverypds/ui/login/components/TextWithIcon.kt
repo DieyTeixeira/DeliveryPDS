@@ -1,4 +1,4 @@
-package com.codek.deliverypds.ui.components
+package com.codek.deliverypds.ui.login.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,7 +42,7 @@ fun TextWithIcon(
             style = TextStyle.Default.copy(
                 fontSize = 12.sp
             ),
-            color = Color.LightGray
+            color = Color.DarkGray
         )
     }
 }

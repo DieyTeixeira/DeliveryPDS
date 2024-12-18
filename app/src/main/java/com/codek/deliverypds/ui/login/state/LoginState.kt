@@ -1,8 +1,10 @@
-package com.codek.deliverypds.ui.state
+package com.codek.deliverypds.ui.login.state
 
 sealed class LoginState {
     object Idle : LoginState()
     object Loading : LoginState()
+    object LoggedIn : LoginState()
+    object LoggedOut : LoginState()
     data class Success(val userId: String) : LoginState()
     data class Error(val message: String) : LoginState()
 }
