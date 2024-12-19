@@ -1,6 +1,20 @@
-package com.codek.deliverypds.ui.home.components
+package com.codek.deliverypds.ui.home.state
 
 import com.codek.deliverypds.R
+
+data class Category(
+    val id: Int,
+    val name: String,
+    val imageRes: Int
+)
+
+val categories = listOf(
+    Category(0, "Todos", R.drawable.cat_all),
+    Category(1, "Bolos", R.drawable.cat_bolo),
+    Category(2, "Pizzas", R.drawable.cat_pizza),
+    Category(3, "Lasanhas", R.drawable.cat_lasanha),
+    Category(4, "Panquecas", R.drawable.cat_panqueca)
+)
 
 data class Product(
     val id: Int,
@@ -8,14 +22,6 @@ data class Product(
     val price: Double,
     val imageRes: Int,
     val categoryId: Int
-)
-
-val categories = listOf(
-    "Todos",
-    "Bolos",
-    "Pizzas",
-    "Lasanhas",
-    "Panquecas"
 )
 
 val products = listOf(

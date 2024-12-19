@@ -6,8 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,8 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults.cardElevation
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,11 +26,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.codek.deliverypds.app.states.formatPrice
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.codek.deliverypds.app.theme.ColorSec
+import com.codek.deliverypds.ui.cart.viewmodel.CartViewModel
+import com.codek.deliverypds.ui.home.state.Product
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeProducts(
-    colorSec: Color,
     filteredProducts: List<Product>,
     onProductSelected: (Product) -> Unit = {}
 ) {
@@ -52,7 +51,6 @@ fun HomeProducts(
                 imageResource = product.imageRes,
                 productName = product.name,
                 productPrice = product.price,
-                colorSec = colorSec,
                 onClick = { onProductSelected(product) }
             )
         }
@@ -61,10 +59,10 @@ fun HomeProducts(
 
 @Composable
 fun ProductCard(
+    cartViewModel: CartViewModel = koinViewModel(),
     imageResource: Int,
     productName: String,
     productPrice: Double,
-    colorSec: Color,
     onClick: () -> Unit
 ) {
 
@@ -110,9 +108,9 @@ fun ProductCard(
                 )
             }
             Text(
-                text = formatPrice(productPrice),
+                text = cartViewModel.formatPrice(productPrice),
                 fontSize = 18.sp,
-                color = colorSec
+                color = ColorSec
             )
         }
     }

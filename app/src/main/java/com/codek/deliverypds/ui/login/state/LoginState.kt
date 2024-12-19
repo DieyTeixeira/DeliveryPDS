@@ -1,4 +1,4 @@
-package com.codek.deliverypds.app.states
+package com.codek.deliverypds.ui.login.state
 
 sealed class LoginState {
     object Idle : LoginState()

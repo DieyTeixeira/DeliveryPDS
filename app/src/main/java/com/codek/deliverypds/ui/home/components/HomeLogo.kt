@@ -17,27 +17,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.codek.deliverypds.R
+import com.codek.deliverypds.app.theme.ColorSec
 
 @Composable
 fun HomeLogo(
-    colorSec: Color,
-    onNavigateToTeste: () -> Unit = {}
+    onSignOutClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
-            .background(colorSec),
+            .background(ColorSec),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.logo_panelinha),
+            painter = painterResource(id = R.drawable.logo_pds),
             contentDescription = "Logo",
             modifier = Modifier
                 .size(100.dp)
                 .clip(RoundedCornerShape(100))
-                .clickable( onClick = onNavigateToTeste )
+                .clickable( onClick = onSignOutClick )
         )
     }
 }

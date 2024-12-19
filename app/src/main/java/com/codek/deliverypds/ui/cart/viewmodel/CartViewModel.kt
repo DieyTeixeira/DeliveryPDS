@@ -1,27 +1,16 @@
-package com.codek.deliverypds.app.states
+package com.codek.deliverypds.ui.cart.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import com.codek.deliverypds.ui.cart.state.CartItem
 import java.text.NumberFormat
 import java.util.Locale
-import kotlin.collections.filter
-import kotlin.collections.find
-import kotlin.collections.map
-import kotlin.collections.plus
 
-data class CartItem(
-    val id: Int,
-    val name: String,
-    val quantity: Int,
-    val imageRes: Int,
-    val price: Double,
-    val totalPrice: Double = price * quantity
-)
-
-class CartState {
+class CartViewModel : ViewModel() {
     private val _items = mutableStateOf<List<CartItem>>(emptyList())
     val items: List<CartItem> get() = _items.value
 
-    // Adiciona ou atualiza um item no carrinho
+    // Adicionar ou atualizar item no carrinho
     fun addItem(productId: Int, name: String, price: Double, imageRes: Int, quantity: Int) {
         val existingItem = _items.value.find { it.id == productId }
         if (existingItem != null) {
@@ -33,18 +22,29 @@ class CartState {
         }
     }
 
-    // Remove um item do carrinho
+    // Remover um item do carrinho
     fun removeItem(itemId: Int) {
         _items.value = _items.value.filter { it.id != itemId }
     }
 
-    // Limpa todos os itens do carrinho
+    // Limpar todos os itens do carrinho
     fun clearCart() {
         _items.value = emptyList()
     }
-}
 
-fun formatPrice(price: Double): String {
-    val formatter = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
-    return formatter.format(price)
+    // Formatar preço
+    fun formatPrice(price: Double): String {
+        val formatter = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
+        return formatter.format(price)
+    }
+
+    // Calcular o total de itens no carrinho
+    fun cartItemCount(): Int {
+        return _items.value.sumOf { it.quantity }
+    }
+
+    // Calcular o preço total de todos os itens no carrinho (quantidade * preço por item)
+    fun totalCartPrice(): Double {
+        return _items.value.sumOf { it.price * it.quantity }
+    }
 }

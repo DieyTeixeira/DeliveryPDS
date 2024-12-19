@@ -1,5 +1,6 @@
 package com.codek.deliverypds.ui.home.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,14 +18,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.codek.deliverypds.app.theme.ColorPri
+import com.codek.deliverypds.ui.home.state.Category
 
 @Composable
 fun HomeCategory(
-    colorPri: Color,
-    categories: List<String>,
+    categories: List<Category>,
     selectedCategory: Int,
     onCategorySelected: (Int) -> Unit = {}
 ) {
@@ -40,10 +43,9 @@ fun HomeCategory(
                 Spacer(modifier = Modifier.width(15.dp))
             }
             CategoryButton(
-                colorPri = colorPri,
-                categoryName = categories[index],
-                isSelected = selectedCategory == index,
-                onClick = { onCategorySelected(index) }
+                category = categories[index],
+                isSelected = selectedCategory == categories[index].id,
+                onClick = { onCategorySelected(categories[index].id) }
             )
         }
     }
@@ -51,26 +53,35 @@ fun HomeCategory(
 
 @Composable
 fun CategoryButton(
-    colorPri: Color,
-    categoryName: String,
+    category: Category,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .clip(RoundedCornerShape(50))
-            .background(if (isSelected) colorPri else Color.Gray.copy(alpha = 0.5f))
-            .size(59.dp)
-            .clickable { onClick() },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Column(
+            modifier = Modifier
+                .clip(RoundedCornerShape(50))
+                .background(if (isSelected) ColorPri else Color.Gray.copy(alpha = 0.5f))
+                .size(59.dp)
+                .clickable { onClick() },
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = category.imageRes),
+                contentDescription = category.name,
+                modifier = Modifier.size(35.dp)
+            )
+        }
+        Spacer(modifier = Modifier.size(2.dp))
         Text(
-            text = categoryName,
+            text = category.name,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier.padding(8.dp)
+            color = Color.Black
         )
     }
 }

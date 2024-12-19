@@ -15,7 +15,10 @@ import androidx.navigation.compose.rememberNavController
 import com.codek.deliverypds.app.repository.AuthRepository
 import com.codek.deliverypds.ui.login.screen.LoginScreen
 import com.codek.deliverypds.app.theme.DeliveryPDSTheme
+import com.codek.deliverypds.ui.cart.navigation.cartScreen
+import com.codek.deliverypds.ui.cart.viewmodel.CartViewModel
 import com.codek.deliverypds.ui.home.navigation.homeScreen
+import com.codek.deliverypds.ui.home.viewmodel.HomeViewModel
 import com.codek.deliverypds.ui.login.navigation.loginScreen
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
 import com.codek.deliverypds.ui.splash.navigation.splashScreen
@@ -27,6 +30,7 @@ sealed class Screen(val route: String) {
     object Splash : Screen("splash")
     object Login : Screen("login")
     object Home : Screen("home")
+    object Cart : Screen("cart")
 }
 
 fun NavHostController.navigateToScreen(route: String, popUpToRoute: String? = null) {
@@ -42,6 +46,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
+        val cartViewModel = CartViewModel()
+        val homeViewModel = HomeViewModel()
 
         enableEdgeToEdge()
         setContent {
@@ -68,7 +74,14 @@ class MainActivity : ComponentActivity() {
                         onLoginSuccess = { navController.navigateToScreen("home", "splash") }
                     )
                     homeScreen(
-                        onSignOut = { navController.navigateToScreen("login", "home") }
+                        homeViewModel = homeViewModel,
+                        cartViewModel = cartViewModel,
+                        onSignOut = { navController.navigateToScreen("login", "home") },
+                        onNavigateToCart = { navController.navigateToScreen("cart", "home") }
+                    )
+                    cartScreen(
+                        cartViewModel = cartViewModel,
+                        onNavigateToHome = { navController.navigateToScreen("home", "cart") }
                     )
                 }
             }

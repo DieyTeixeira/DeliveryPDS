@@ -9,13 +9,18 @@ import com.codek.deliverypds.app.animations.exitTransition
 import com.codek.deliverypds.app.animations.popEnterTransition
 import com.codek.deliverypds.app.animations.popExitTransition
 import com.codek.deliverypds.app.repository.AuthRepository
+import com.codek.deliverypds.ui.cart.viewmodel.CartViewModel
 import com.codek.deliverypds.ui.home.screen.HomeScreen
+import com.codek.deliverypds.ui.home.viewmodel.HomeViewModel
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.homeScreen(
-    onSignOut: () -> Unit
+    homeViewModel: HomeViewModel,
+    cartViewModel: CartViewModel,
+    onSignOut: () -> Unit,
+    onNavigateToCart: () -> Unit
 ) {
     composable(
         route = Screen.Home.route,
@@ -30,11 +35,16 @@ fun NavGraphBuilder.homeScreen(
         val scope = rememberCoroutineScope()
 
         HomeScreen(
+            homeViewModel = homeViewModel,
+            cartViewModel = cartViewModel,
             onSignOutClick = {
                 scope.launch {
                     viewModel.signOut()
                 }
                 onSignOut()
+            },
+            onNavigateToCart = {
+                onNavigateToCart()
             }
         )
     }

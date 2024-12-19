@@ -1,6 +1,6 @@
 package com.codek.deliverypds.app.repository
 
-import com.codek.deliverypds.app.states.LoginState
+import com.codek.deliverypds.ui.login.state.LoginState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.tasks.await

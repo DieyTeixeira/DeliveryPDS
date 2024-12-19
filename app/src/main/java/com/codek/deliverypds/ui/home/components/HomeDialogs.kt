@@ -28,12 +28,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.codek.deliverypds.app.states.formatPrice
+import com.codek.deliverypds.app.theme.ColorSec
+import com.codek.deliverypds.ui.cart.viewmodel.CartViewModel
+import com.codek.deliverypds.ui.home.state.Product
 
 @Composable
-fun ProductDialog(
+fun HomeProductDialog(
     product: Product,
-    colorSec: Color,
+    cartViewModel: CartViewModel,
     onDismiss: () -> Unit,
     onAddToCart: (Int) -> Unit
 ) {
@@ -66,7 +68,7 @@ fun ProductDialog(
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = formatPrice(price),
+                text = cartViewModel.formatPrice(price),
                 fontSize = 16.sp,
                 color = Color.Gray
             )
@@ -79,7 +81,7 @@ fun ProductDialog(
                     modifier = Modifier
                         .size(30.dp)
                         .background(
-                            colorSec,
+                            ColorSec,
                             RoundedCornerShape(8.dp, 0.dp, 0.dp, 8.dp)
                         )
                         .clickable { if (quantity > 1) quantity-- },
@@ -105,7 +107,7 @@ fun ProductDialog(
                     modifier = Modifier
                         .size(30.dp)
                         .background(
-                            colorSec,
+                            ColorSec,
                             RoundedCornerShape(0.dp, 8.dp, 8.dp, 0.dp)
                         )
                         .clickable { quantity++ },
@@ -125,7 +127,7 @@ fun ProductDialog(
                     .width(200.dp)
                     .height(40.dp)
                     .background(
-                        colorSec,
+                        ColorSec,
                         RoundedCornerShape(16.dp)
                     )
                     .clickable { onAddToCart(quantity) },

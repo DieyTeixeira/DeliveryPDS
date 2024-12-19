@@ -4,8 +4,8 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codek.deliverypds.app.repository.AuthRepository
-import com.codek.deliverypds.app.states.LoginState
-import com.codek.deliverypds.app.states.LoginUiState
+import com.codek.deliverypds.ui.login.state.LoginState
+import com.codek.deliverypds.ui.login.state.LoginUiState
 import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
