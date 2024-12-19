@@ -1,4 +1,4 @@
-package com.codek.deliverypds.ui.login.state
+package com.codek.deliverypds.app.states
 
 sealed class LoginState {
     object Idle : LoginState()
@@ -12,5 +12,6 @@ sealed class LoginState {
 data class LoginUiState(
     val email: String = "",
     val password: String = "",
-    val confirmPassword: String = ""
+    val confirmPassword: String = "",
+    val changeScreen: Boolean = false,
 )

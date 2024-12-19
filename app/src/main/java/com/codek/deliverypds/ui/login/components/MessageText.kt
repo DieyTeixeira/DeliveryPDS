@@ -32,7 +32,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.codek.deliverypds.ui.login.state.LoginState
 import com.codek.deliverypds.app.theme.ColorError
 import com.codek.deliverypds.app.theme.ColorSucess
 import com.codek.deliverypds.app.theme.DarkColorError
@@ -42,46 +41,54 @@ import kotlinx.coroutines.delay
 @Composable
 fun MensagemError(
     errorMessage: String,
-    messageKey: Int,
-    closeInfo: Int,
-    selected: Boolean
+    repeatMessage: Boolean,
+    changeScreen: Boolean
 ) {
-    var isErrorVisible by remember { mutableStateOf(false) }
+    var isVisible by remember { mutableStateOf(false) }
+    var currentMessage by remember { mutableStateOf(errorMessage) }
 
-    LaunchedEffect(messageKey) {
-        isErrorVisible = true
-        delay(2000)
-        isErrorVisible = false
+    val errorMessageAjust = when (currentMessage) {
+        "We have blocked all requests from this device due to unusual activity. Try again later." ->
+            "Acesso bloqueado.\nTente novamente mais tarde"
+        "ERROR_INVALID_CREDENTIAL" -> "Credenciais inválidas.\nTente novamente"
+        "ERROR_INVALID_EMAIL" -> "O formato do email não é válido"
+        "ERROR_USER_NOT_FOUND" -> "Usuário não encontrado.\nVerifique suas credenciais"
+        "ERROR_WRONG_PASSWORD" -> "Senha incorreta"
+        else -> currentMessage
     }
 
-    LaunchedEffect(closeInfo) {
-        isErrorVisible = false
+    LaunchedEffect(errorMessage, repeatMessage) {
+        currentMessage = errorMessage
+        isVisible = true
+        delay(2500)
+        isVisible = false
+    }
+
+    LaunchedEffect(changeScreen) {
+        isVisible = false
     }
 
     AnimatedVisibility(
-        visible = isErrorVisible,
+        visible = isVisible,
         enter = fadeIn(animationSpec = tween(durationMillis = 500)) +
                 slideInVertically(
-                    initialOffsetY = { if (selected) -260 else it },
+                    initialOffsetY = { if (changeScreen) -240 else it },
                     animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
                 ),
         exit = fadeOut(animationSpec = tween(durationMillis = 300)) +
                 slideOutVertically(
-                    targetOffsetY = { if (selected) -260 else it },
+                    targetOffsetY = { if (changeScreen) -240 else it },
                     animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
                 )
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(horizontal = 20.dp)
                 .border(
                     width = 2.dp,
                     brush = Brush.verticalGradient(
-                        colors = listOf(
-                            ColorError,
-                            DarkColorError
-                        )
+                        colors = listOf(ColorError, DarkColorError)
                     ),
                     shape = RoundedCornerShape(15.dp)
                 )
@@ -91,7 +98,7 @@ fun MensagemError(
                 )
         ) {
             Text(
-                text = errorMessage,
+                text = errorMessageAjust,
                 color = Color.White,
                 style = TextStyle.Default.copy(
                     fontSize = 18.sp,
@@ -108,19 +115,21 @@ fun MensagemError(
 
 @Composable
 fun MensagemSuccess(
-    messageKey: Int
+    successMessage: String,
+    onLoginSuccess: () -> Unit
 ) {
-    var isSuccessVisible by remember { mutableStateOf(false) }
-    val successMessage = "Login bem-sucedido!"
+    var isVisible by remember { mutableStateOf(false) }
 
-    LaunchedEffect(messageKey) {
-        isSuccessVisible = true
-        delay(3000)
-        isSuccessVisible = false
+    LaunchedEffect(successMessage) {
+        isVisible = true
+        delay(2000)
+        isVisible = false
+        delay(300)
+        onLoginSuccess()
     }
 
     AnimatedVisibility(
-        visible = isSuccessVisible,
+        visible = isVisible,
         enter = fadeIn(animationSpec = tween(durationMillis = 500)) +
                 slideInVertically(
                     initialOffsetY = { it },
@@ -135,7 +144,7 @@ fun MensagemSuccess(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(horizontal = 20.dp)
                 .border(
                     width = 2.dp,
                     brush = Brush.verticalGradient(
@@ -152,7 +161,7 @@ fun MensagemSuccess(
                 )
         ) {
             Text(
-                text = successMessage,
+                text = "Login bem-sucedido!",
                 color = Color.White,
                 style = TextStyle.Default.copy(
                     fontSize = 18.sp,

@@ -17,10 +17,10 @@ import kotlin.math.sin
 
 @Composable
 fun CircleLoading(
+    color: Color,
     modifier: Modifier = Modifier,
     size: Dp = 40.dp,
     durationMillis: Int = 1200,
-    color: Color,
     circleSizeRatio: Float = 1.0f
 ) {
     val transition = rememberInfiniteTransition()

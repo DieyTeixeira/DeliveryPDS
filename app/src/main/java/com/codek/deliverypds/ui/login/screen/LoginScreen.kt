@@ -16,11 +16,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,10 +33,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.codek.deliverypds.R
-import com.codek.deliverypds.ui.login.state.LoginState
-import com.codek.deliverypds.app.theme.ColorPri
+import com.codek.deliverypds.app.states.LoginState
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
 import androidx.compose.ui.platform.LocalConfiguration
+import com.codek.deliverypds.app.theme.ColorSec
+import com.codek.deliverypds.app.theme.ManageStatusBarIcons
 import com.codek.deliverypds.ui.login.components.CircleLoading
 import com.codek.deliverypds.ui.login.components.MensagemError
 import com.codek.deliverypds.ui.login.components.MensagemSuccess
@@ -51,67 +49,57 @@ fun LoginScreen(
     onSignUpClick: () -> Unit,
     onLoginSuccess: () -> Unit
 ) {
-
-    val screenHeight = LocalConfiguration.current.screenHeightDp
-    val halfScreenHeight = ((screenHeight / 2) + 40).dp
-    val medScreenHeight = halfScreenHeight + 100.dp
-    val plusScreenHeight = halfScreenHeight + 130.dp
-    val roundedShape = 40.dp
-    val animateDuration = 500
+    // Cor dos ícones da status bar
+    ManageStatusBarIcons(isIconBlack = true)
 
     val loginState by viewModel.loginState.collectAsState()
     var errorMessage by remember { mutableStateOf("") }
-    var showMessage by remember { mutableStateOf(false) }
+    var successMessage by remember { mutableStateOf("") }
+    var changeScreen by remember { mutableStateOf(false) }
+    var repeatMessage by remember { mutableStateOf(false) }
 
-    var selected by remember { mutableStateOf(false) }
-
-    val setLogo by animateDpAsState(if (selected) medScreenHeight else 0.dp, tween(animateDuration))
-    val scaleLogo by animateFloatAsState(if (selected) 0.6f else 1f, tween(animateDuration))
-
-    val setInfo by animateDpAsState(if (selected) 260.dp else 0.dp, tween(animateDuration))
-
-    val setScreen by animateDpAsState(if (selected) 0.dp else halfScreenHeight, tween(animateDuration))
-    val sizeScreen by animateDpAsState(if (selected) plusScreenHeight else halfScreenHeight, tween(animateDuration))
-
-    val roundedShapeUp by animateDpAsState(if (selected) roundedShape else 0.dp, tween(animateDuration))
-    val roundedShapeDown by animateDpAsState(if (selected) 0.dp else roundedShape, tween(animateDuration))
-
-    var messageKey by remember { mutableStateOf(0) }
-    var closeInfo by remember { mutableStateOf(0) }
+    /* -------------------- Configuração da animação da tela ------------------------------------ */
+    val screenHeight = LocalConfiguration.current.screenHeightDp
+    val halfScreenHeight = ((screenHeight / 2) + 40).dp
+    val medScreenHeight = halfScreenHeight + 90.dp
+    val plusScreenHeight = halfScreenHeight + 130.dp
+    val roundedShape = 40.dp
+    val animateDuration = 500
+    val setLogo by animateDpAsState(if (changeScreen) medScreenHeight else 0.dp, tween(animateDuration))
+    val scaleLogo by animateFloatAsState(if (changeScreen) 0.6f else 1f, tween(animateDuration))
+    val setInfo by animateDpAsState(if (changeScreen) 240.dp else 0.dp, tween(animateDuration))
+    val setScreen by animateDpAsState(if (changeScreen) 0.dp else halfScreenHeight, tween(animateDuration))
+    val sizeScreen by animateDpAsState(if (changeScreen) plusScreenHeight else halfScreenHeight, tween(animateDuration))
+    val roundedShapeUp by animateDpAsState(if (changeScreen) roundedShape else 0.dp, tween(animateDuration))
+    val roundedShapeDown by animateDpAsState(if (changeScreen) 0.dp else roundedShape, tween(animateDuration))
+    /* ------------------------------------------------------------------------------------------ */
 
     LaunchedEffect(loginState) {
-        if (loginState is LoginState.Success) {
-            onLoginSuccess()
-        }
-        if (loginState is LoginState.Error) {
-            errorMessage = (loginState as LoginState.Error).message
-            showMessage = true
+        when (loginState) {
+            is LoginState.Loading -> {
+                errorMessage = ""
+            }
+            is LoginState.Success -> {
+                successMessage = (loginState as LoginState.Success).userId
+            }
+            is LoginState.Error -> {
+                errorMessage = (loginState as LoginState.Error).message
+            }
+            else -> {}
         }
     }
 
     Box (
         modifier = Modifier
             .fillMaxSize()
-            .background(ColorPri)
+            .background(ColorSec)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = errorMessage,
-                    color = Color.Black
-                )
-            }
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(100.dp))
             Image(
                 painter = painterResource(id = R.drawable.logo_panelinha),
                 contentDescription = "Logo",
@@ -130,14 +118,10 @@ fun LoginScreen(
                     .offset(y = setInfo),
                 contentAlignment = Alignment.Center
             ) {
-                if (showMessage) {
-                    messageKey++
-                    MensagemError(errorMessage, messageKey, closeInfo, selected)
-                }
                 when (loginState) {
-                    is LoginState.Loading -> CircleLoading(color = Color.White)
-                    is LoginState.Success -> MensagemSuccess(messageKey)
-//                    is LoginState.Error -> MensagemError(errorMessage, messageKey, closeInfo, selected)
+                    is LoginState.Loading -> CircleLoading(Color.White)
+                    is LoginState.Success -> MensagemSuccess(successMessage, onLoginSuccess)
+                    is LoginState.Error -> MensagemError(errorMessage, repeatMessage, changeScreen)
                     else -> {}
                 }
             }
@@ -164,7 +148,7 @@ fun LoginScreen(
                         )
                 )
                 this@Column.AnimatedVisibility(
-                    visible = !selected,
+                    visible = !changeScreen,
                     enter = fadeIn(animationSpec = tween(animateDuration + 200)),
                     exit = fadeOut(animationSpec = tween(animateDuration - 100))
                 ) {
@@ -172,31 +156,29 @@ fun LoginScreen(
                         viewModel = viewModel,
                         sizeScreen = halfScreenHeight,
                         onSignInClick = {
-                            messageKey++
+                            repeatMessage = !repeatMessage
                             if (loginState != LoginState.Loading) {
                                 onSignInClick()
                             }
                         },
                         onSignUpClick = {
-                            selected = !selected
-                            closeInfo++
+                            changeScreen = !changeScreen
                         }
                     )
                 }
                 this@Column.AnimatedVisibility(
-                    visible = selected,
+                    visible = changeScreen,
                     enter = fadeIn(animationSpec = tween(animateDuration + 200)),
                     exit = fadeOut(animationSpec = tween(animateDuration - 100))
                 ) {
                     SignUpScreen(
                         viewModel = viewModel,
                         onSignUpClick = {
-                            messageKey++
+                            repeatMessage = !repeatMessage
                             onSignUpClick()
                         },
                         onSignInClick = {
-                            selected = !selected
-                            closeInfo++
+                            changeScreen = !changeScreen
                         }
                     )
                 }

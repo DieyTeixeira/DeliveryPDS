@@ -4,10 +4,9 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codek.deliverypds.app.repository.AuthRepository
-import com.codek.deliverypds.ui.login.state.LoginState
-import com.codek.deliverypds.ui.login.state.LoginUiState
+import com.codek.deliverypds.app.states.LoginState
+import com.codek.deliverypds.app.states.LoginUiState
 import com.google.firebase.auth.FirebaseAuthException
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,24 +44,13 @@ class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
         _loginState.value = LoginState.Loading
 
-//        viewModelScope.launch {
-//            _loginState.value = authRepository.signIn(email, password)
-//        }
-
         viewModelScope.launch {
-            delay(2000)
             try {
                 _loginState.value = authRepository.signIn(email, password)
+            } catch (e: FirebaseAuthException) {
+                _loginState.value = LoginState.Error(e.errorCode)
             } catch (e: Exception) {
-                val errorMessage = when (e.message) {
-                    "ERROR_INVALID_CREDENTIAL" -> "Erro de credencial"
-                    "ERROR_INVALID_EMAIL" -> "O email fornecido é inválido."
-                    "ERROR_USER_NOT_FOUND" -> "Usuário não encontrado. Verifique o email e tente novamente."
-                    "ERROR_WRONG_PASSWORD" -> "Senha incorreta. Tente novamente."
-                    "ERROR_USER_DISABLED" -> "Esta conta foi desativada. Entre em contato com o suporte."
-                    else -> "Erro ao tentar fazer login: ${e.message}. Tente novamente mais tarde."
-                }
-                _loginState.value = LoginState.Error(errorMessage)
+                _loginState.value = LoginState.Error("Erro desconhecido. Tente novamente mais tarde.")
             }
         }
     }

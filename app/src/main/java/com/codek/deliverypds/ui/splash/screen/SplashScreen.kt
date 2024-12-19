@@ -1,5 +1,6 @@
 package com.codek.deliverypds.ui.splash.screen
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,23 +18,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowInsetsControllerCompat
 import com.codek.deliverypds.app.theme.ColorPri
 import com.codek.deliverypds.app.theme.ColorSec
+import com.codek.deliverypds.app.theme.ManageStatusBarIcons
 import com.codek.deliverypds.ui.splash.components.ChasingTwoDots
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen() {
+    // Cor dos ícones da status bar
+    ManageStatusBarIcons(isIconBlack = true)
 
     var loadingMessage by remember { mutableStateOf("Carregando...") }
 
     LaunchedEffect(Unit) {
         delay(5000)
-//        loadingMessage = "Verificando versão do app"
-//        delay(5000)
-//        loadingMessage = "Carregamento completo"
-//        delay(5000)
     }
 
     Box(

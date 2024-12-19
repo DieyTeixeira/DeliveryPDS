@@ -1,8 +1,5 @@
 package com.codek.deliverypds.ui.login.navigation
 
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -13,7 +10,6 @@ import com.codek.deliverypds.app.animations.popEnterTransition
 import com.codek.deliverypds.app.animations.popExitTransition
 import com.codek.deliverypds.app.repository.AuthRepository
 import com.codek.deliverypds.ui.login.screen.LoginScreen
-import com.codek.deliverypds.ui.login.state.LoginState
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
