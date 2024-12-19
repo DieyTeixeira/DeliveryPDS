@@ -6,9 +6,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.codek.deliverypds.app.theme.Dark
 import com.codek.deliverypds.app.theme.ManageStatusBarIcons
@@ -70,14 +78,29 @@ fun HomeScreen(
 
         // Modal para iserir no carrinho
         homeViewModel.selectedProduct?.let { product ->
+            val isVisible = remember { mutableStateOf(true) }
+
+            LaunchedEffect(homeViewModel.selectedProduct) {
+                isVisible.value = true
+            }
+
             HomeProductDialog(
                 product = product,
                 cartViewModel = cartViewModel,
-                onDismiss = { homeViewModel.selectedProduct = null },
-                onAddToCart = { quantity ->
-                    cartViewModel.addItem(product.id, product.name, product.price, product.imageRes, quantity)
+                onDismiss = {
                     homeViewModel.selectedProduct = null
-                }
+                },
+                onAddToCart = { quantity ->
+                    cartViewModel.addItem(
+                        product.id,
+                        product.name,
+                        product.price,
+                        product.imageRes,
+                        quantity
+                    )
+                    isVisible.value = false
+                },
+                isVisible = isVisible.value
             )
         }
     }
