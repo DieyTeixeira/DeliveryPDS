@@ -17,7 +17,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.codek.deliverypds.app.theme.Dark
 import com.codek.deliverypds.app.theme.ManageStatusBarIcons
 import com.codek.deliverypds.ui.cart.viewmodel.CartViewModel
@@ -33,48 +35,57 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     cartViewModel: CartViewModel,
     onSignOutClick: () -> Unit,
-    onNavigateToCart: () -> Unit
+    onNavigateToCart: () -> Unit,
+    onNavigateToPhoto: () -> Unit
 ) {
+
     // Cor dos ícones da status bar
     ManageStatusBarIcons(isIconBlack = false)
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.LightGray.copy(alpha = 0.5f))
     ) {
-        Box(
+
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(30.dp)
-                .background(Dark)
-        )
+                .fillMaxSize()
+                .background(Color.LightGray.copy(alpha = 0.5f))
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
+                    .background(Dark)
+            )
 
-        // Header
-        HomeHeader(
-            searchText = homeViewModel.searchText,
-            onSearchTextChanged = { homeViewModel.searchText = it },
-            cartItemCount = cartViewModel.cartItemCount(),
-            onClicked = { onNavigateToCart() }
-        )
+            // Header
+            HomeHeader(
+                searchText = homeViewModel.searchText,
+                onSearchTextChanged = { homeViewModel.searchText = it },
+                cartItemCount = cartViewModel.cartItemCount(),
+                onClicked = { onNavigateToCart() }
+            )
 
-        // Seção do logo
-        HomeLogo(
-            onSignOutClick = { onSignOutClick() }
-        )
+            // Seção do logo
+            HomeLogo(
+                onSignOutClick = { onSignOutClick() },
+                onPhotoClick = { onNavigateToPhoto() }
+            )
 
-        // Seção de Categorias
-        HomeCategory(
-            categories = homeViewModel.category,
-            selectedCategory = homeViewModel.selectedCategory,
-            onCategorySelected = { homeViewModel.selectedCategory = it }
-        )
+            // Seção de Categorias
+            HomeCategory(
+                categories = homeViewModel.category,
+                selectedCategory = homeViewModel.selectedCategory,
+                onCategorySelected = { homeViewModel.selectedCategory = it }
+            )
 
-        // Carrossel de produtos
-        HomeProducts(
-            filteredProducts = homeViewModel.filteredProducts,
-            onProductSelected = { homeViewModel.selectedProduct = it }
-        )
+            // Carrossel de produtos
+            HomeProducts(
+                filteredProducts = homeViewModel.filteredProducts,
+                onProductSelected = { homeViewModel.selectedProduct = it }
+            )
+        }
 
         // Modal para iserir no carrinho
         homeViewModel.selectedProduct?.let { product ->

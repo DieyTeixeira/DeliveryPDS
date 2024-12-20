@@ -5,32 +5,30 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.codek.deliverypds.app.repository.AuthRepository
-import com.codek.deliverypds.ui.login.screen.LoginScreen
 import com.codek.deliverypds.app.theme.DeliveryPDSTheme
 import com.codek.deliverypds.ui.cart.navigation.cartScreen
 import com.codek.deliverypds.ui.cart.viewmodel.CartViewModel
 import com.codek.deliverypds.ui.home.navigation.homeScreen
+import com.codek.deliverypds.ui.config.navigation.configScreen
 import com.codek.deliverypds.ui.home.viewmodel.HomeViewModel
 import com.codek.deliverypds.ui.login.navigation.loginScreen
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
+import com.codek.deliverypds.ui.config.viewmodel.ConfigViewModel
 import com.codek.deliverypds.ui.splash.navigation.splashScreen
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
     object Login : Screen("login")
     object Home : Screen("home")
     object Cart : Screen("cart")
+    object Config : Screen("config")
 }
 
 fun NavHostController.navigateToScreen(route: String, popUpToRoute: String? = null) {
@@ -46,8 +44,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
-        val cartViewModel = CartViewModel()
-        val homeViewModel = HomeViewModel()
+
+        val loginViewModel: LoginViewModel by viewModel()
+        val cartViewModel: CartViewModel by viewModel()
+        val homeViewModel: HomeViewModel by viewModel()
+        val configViewModel: ConfigViewModel by viewModel()
 
         enableEdgeToEdge()
         setContent {
@@ -56,7 +57,8 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 LaunchedEffect(Unit) {
-                    delay(5000)
+                    homeViewModel.preloadImages()
+                    delay(2000)
                     val currentUser = FirebaseAuth.getInstance().currentUser
                     if (currentUser != null) {
                         navController.navigateToScreen("home", "splash")
@@ -71,17 +73,23 @@ class MainActivity : ComponentActivity() {
                 ) {
                     splashScreen()
                     loginScreen(
+                        loginViewModel = loginViewModel,
                         onLoginSuccess = { navController.navigateToScreen("home", "splash") }
                     )
                     homeScreen(
                         homeViewModel = homeViewModel,
                         cartViewModel = cartViewModel,
                         onSignOut = { navController.navigateToScreen("login", "home") },
-                        onNavigateToCart = { navController.navigateToScreen("cart", "home") }
+                        onNavigateToCart = { navController.navigateToScreen("cart", "home") },
+                        onNavigateToConfig = { navController.navigateToScreen("config", "home") }
                     )
                     cartScreen(
                         cartViewModel = cartViewModel,
                         onNavigateToHome = { navController.navigateToScreen("home", "cart") }
+                    )
+                    configScreen(
+                        configViewModel = configViewModel,
+                        onNavigateToHome = { navController.navigateToScreen("home", "config") }
                     )
                 }
             }

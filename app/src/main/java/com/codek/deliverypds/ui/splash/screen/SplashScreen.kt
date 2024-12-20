@@ -24,6 +24,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.codek.deliverypds.app.theme.ColorPri
 import com.codek.deliverypds.app.theme.ColorSec
 import com.codek.deliverypds.app.theme.ManageStatusBarIcons
+import com.codek.deliverypds.ui.home.viewmodel.HomeViewModel
 import com.codek.deliverypds.ui.splash.components.ChasingTwoDots
 import kotlinx.coroutines.delay
 

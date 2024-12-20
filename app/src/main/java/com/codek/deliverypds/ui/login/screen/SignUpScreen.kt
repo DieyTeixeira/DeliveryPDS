@@ -55,13 +55,13 @@ import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
 
 @Composable
 fun SignUpScreen(
-    viewModel: LoginViewModel,
+    loginViewModel: LoginViewModel,
     onSignUpClick: () -> Unit,
     onSignInClick: () -> Unit
 ) {
 
     val focusManager = LocalFocusManager.current
-    val loginUiState by viewModel.loginUiState.collectAsState()
+    val loginUiState by loginViewModel.loginUiState.collectAsState()
     var passwordVisible by remember { mutableStateOf(false) }
     var confPasswordVisible by remember { mutableStateOf(false) }
 
@@ -94,7 +94,7 @@ fun SignUpScreen(
             )
             OutlinedTextField(
                 value = loginUiState.email,
-                onValueChange = { viewModel.onEmailChange(it) },
+                onValueChange = { loginViewModel.onEmailChange(it) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
@@ -137,7 +137,7 @@ fun SignUpScreen(
             )
             OutlinedTextField(
                 value = loginUiState.password,
-                onValueChange = { viewModel.onPasswordChange(it) },
+                onValueChange = { loginViewModel.onPasswordChange(it) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
@@ -193,7 +193,7 @@ fun SignUpScreen(
             )
             OutlinedTextField(
                 value = loginUiState.confirmPassword,
-                onValueChange = { viewModel.onConfirmPasswordChange(it) },
+                onValueChange = { loginViewModel.onConfirmPasswordChange(it) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)

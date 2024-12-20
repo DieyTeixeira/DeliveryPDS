@@ -18,16 +18,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codek.deliverypds.app.theme.ColorPri
-import com.codek.deliverypds.ui.home.state.Category
+import com.codek.deliverypds.ui.home.state.CategoryUrl
+import coil.compose.rememberImagePainter
 
 @Composable
 fun HomeCategory(
-    categories: List<Category>,
+    categories: List<CategoryUrl>,
     selectedCategory: Int,
     onCategorySelected: (Int) -> Unit = {}
 ) {
@@ -53,7 +53,7 @@ fun HomeCategory(
 
 @Composable
 fun CategoryButton(
-    category: Category,
+    category: CategoryUrl,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -71,7 +71,7 @@ fun CategoryButton(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = category.imageRes),
+                painter = rememberImagePainter(data = category.imageRes),
                 contentDescription = category.name,
                 modifier = Modifier.size(35.dp)
             )

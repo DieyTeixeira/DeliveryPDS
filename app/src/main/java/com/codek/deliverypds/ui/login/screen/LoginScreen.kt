@@ -44,7 +44,7 @@ import com.codek.deliverypds.ui.login.components.MensagemSuccess
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel,
+    loginViewModel: LoginViewModel,
     onSignInClick: () -> Unit,
     onSignUpClick: () -> Unit,
     onLoginSuccess: () -> Unit
@@ -52,7 +52,7 @@ fun LoginScreen(
     // Cor dos ícones da status bar
     ManageStatusBarIcons(isIconBlack = true)
 
-    val loginState by viewModel.loginState.collectAsState()
+    val loginState by loginViewModel.loginState.collectAsState()
     var errorMessage by remember { mutableStateOf("") }
     var successMessage by remember { mutableStateOf("") }
     var changeScreen by remember { mutableStateOf(false) }
@@ -108,7 +108,7 @@ fun LoginScreen(
                     .offset(y = setLogo)
                     .scale(scaleLogo)
                     .clip(RoundedCornerShape(100))
-                    .clickable { viewModel.signOut() }
+                    .clickable { loginViewModel.signOut() }
             )
             Spacer(modifier = Modifier.height(20.dp))
             Box(
@@ -153,7 +153,7 @@ fun LoginScreen(
                     exit = fadeOut(animationSpec = tween(animDuration - 100))
                 ) {
                     SignInScreen(
-                        viewModel = viewModel,
+                        loginViewModel = loginViewModel,
                         sizeScreen = halfScreen,
                         onSignInClick = {
                             repeatMessage = !repeatMessage
@@ -172,7 +172,7 @@ fun LoginScreen(
                     exit = fadeOut(animationSpec = tween(animDuration - 100))
                 ) {
                     SignUpScreen(
-                        viewModel = viewModel,
+                        loginViewModel = loginViewModel,
                         onSignUpClick = {
                             repeatMessage = !repeatMessage
                             onSignUpClick()

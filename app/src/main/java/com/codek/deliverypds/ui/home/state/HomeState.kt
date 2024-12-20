@@ -16,6 +16,20 @@ val categories = listOf(
     Category(4, "Panquecas", R.drawable.cat_panqueca)
 )
 
+data class CategoryUrl(
+    val id: Int,
+    val name: String,
+    val imageRes: String
+)
+
+val categoriesUrl = listOf(
+    CategoryUrl(0, "Todos", "https://drive.google.com/uc?export=view&id=1YZPIpp8KnytDrtK8CIKbC_cxUP-Zj_Qy"),
+    CategoryUrl(1, "Bolos", "https://drive.google.com/uc?export=view&id=1_R-ZJ797rHEW3TENxZfA9oZMktEcC0Ge"),
+    CategoryUrl(2, "Pizzas", "https://drive.google.com/uc?export=view&id=1fiL_vwe9kxgZKByL7AHfFQoyICseLN9r"),
+    CategoryUrl(3, "Lasanhas", "https://drive.google.com/uc?export=view&id=1Gh_1WeGW39IQGnGPmxGvP2vVwRUnZ00x"),
+    CategoryUrl(4, "Panquecas", "https://drive.google.com/uc?export=view&id=1z9DDP0w9Zf5zfJvgKgWSXylbOywR_kN_")
+)
+
 data class Product(
     val id: Int,
     val name: String,

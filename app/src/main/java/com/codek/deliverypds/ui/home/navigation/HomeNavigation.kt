@@ -20,7 +20,8 @@ fun NavGraphBuilder.homeScreen(
     homeViewModel: HomeViewModel,
     cartViewModel: CartViewModel,
     onSignOut: () -> Unit,
-    onNavigateToCart: () -> Unit
+    onNavigateToCart: () -> Unit,
+    onNavigateToConfig: () -> Unit
 ) {
     composable(
         route = Screen.Home.route,
@@ -45,6 +46,9 @@ fun NavGraphBuilder.homeScreen(
             },
             onNavigateToCart = {
                 onNavigateToCart()
+            },
+            onNavigateToPhoto = {
+                onNavigateToConfig()
             }
         )
     }
