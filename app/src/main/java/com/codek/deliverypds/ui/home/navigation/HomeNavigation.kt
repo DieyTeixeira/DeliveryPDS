@@ -19,9 +19,9 @@ import kotlinx.coroutines.launch
 fun NavGraphBuilder.homeScreen(
     homeViewModel: HomeViewModel,
     cartViewModel: CartViewModel,
+    onNavigateToConfig: () -> Unit,
     onSignOut: () -> Unit,
-    onNavigateToCart: () -> Unit,
-    onNavigateToConfig: () -> Unit
+    onNavigateToCart: () -> Unit
 ) {
     composable(
         route = Screen.Home.route,
@@ -38,6 +38,9 @@ fun NavGraphBuilder.homeScreen(
         HomeScreen(
             homeViewModel = homeViewModel,
             cartViewModel = cartViewModel,
+            onNavigateToPhoto = {
+                onNavigateToConfig()
+            },
             onSignOutClick = {
                 scope.launch {
                     viewModel.signOut()
@@ -46,9 +49,6 @@ fun NavGraphBuilder.homeScreen(
             },
             onNavigateToCart = {
                 onNavigateToCart()
-            },
-            onNavigateToPhoto = {
-                onNavigateToConfig()
             }
         )
     }

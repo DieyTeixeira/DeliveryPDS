@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -24,117 +25,115 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.codek.deliverypds.R
+import com.codek.deliverypds.app.theme.ColorSec
 import com.codek.deliverypds.app.theme.Dark
 
 @Composable
 fun HomeHeader(
     searchText: String,
-    onSearchTextChanged: (String) -> Unit,
-    cartItemCount: Int,
-    onClicked: () -> Unit
+    onSearchTextChanged: (String) -> Unit
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(70.dp)
-            .background(Dark)
-            .padding(horizontal = 15.dp, vertical = 11.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.End
     ) {
-        Row(
+
+        Column(
             modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Campo de pesquisa funcional
-            OutlinedTextField(
-                value = searchText,
-                onValueChange = onSearchTextChanged,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(6f)
-                    .background(
-                        Color.White,
-                        RoundedCornerShape(100)
-                    ),
-                placeholder = {
-                    Text(
-                        text = "Pesquisar...",
-                        color = Color.LightGray,
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            lineHeight = 60.sp
-                        )
-                    )
-                },
-                trailingIcon = {
-                    Image(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Ícone de pesquisa",
-                        colorFilter = ColorFilter.tint(Color.DarkGray)
-                    )
-                },
-                shape = RoundedCornerShape(100),
-                singleLine = true,
-                textStyle = TextStyle(
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    lineHeight = 60.sp
+                .fillMaxWidth()
+                .height(70.dp)
+                .background(
+                    Dark,
+                    RoundedCornerShape(0.dp, 0.dp, 0.dp, 40.dp)
                 )
-            )
-
-            Spacer(modifier = Modifier.width(10.dp))
-
-            // Ícone do carrinho
-            Box(
+                .padding(horizontal = 15.dp, vertical = 11.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.End
+        ) {
+            Row(
                 modifier = Modifier
-                    .size(50.dp)
-                    .weight(1f)
-                    .padding(2.dp)
-                    .clickable { onClicked() }
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
+                Box(modifier = Modifier.size(65.dp))
+                Spacer(modifier = Modifier.width(10.dp))
+                // Campo de pesquisa funcional
+                OutlinedTextField(
+                    value = searchText,
+                    onValueChange = onSearchTextChanged,
                     modifier = Modifier
-                        .fillMaxSize()
-                        .align(Alignment.Center),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = "Carrinho",
-                        colorFilter = ColorFilter.tint(Color.White),
-                        modifier = Modifier.size(35.dp)
-                    )
-                }
-                if (cartItemCount > 0) {
-                    Column(
-                        modifier = Modifier
-                            .size(18.dp)
-                            .background(
-                                Color.Red,
-                                RoundedCornerShape(100)
-                            )
-                            .align(Alignment.TopEnd),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                        .fillMaxHeight()
+                        .weight(6f)
+                        .background(
+                            Color.White,
+                            RoundedCornerShape(100)
+                        ),
+                    placeholder = {
                         Text(
-                            text = cartItemCount.toString(),
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            lineHeight = 10.sp
+                            text = "Pesquisar...",
+                            color = Color.LightGray,
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                lineHeight = 60.sp
+                            )
                         )
-                    }
-                }
+                    },
+                    trailingIcon = {
+                        Image(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Ícone de pesquisa",
+                            colorFilter = ColorFilter.tint(Color.DarkGray)
+                        )
+                    },
+                    shape = RoundedCornerShape(100),
+                    singleLine = true,
+                    textStyle = TextStyle(
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        lineHeight = 60.sp
+                    )
+                )
             }
         }
+
+        Column(
+            modifier = Modifier
+                .width(80.dp)
+                .height(70.dp)
+                .background(
+                    Color.White,
+                    RoundedCornerShape(0.dp, 35.dp, 0.dp, 35.dp)
+                ),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo_pds),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .size(65.dp)
+                    .clip(RoundedCornerShape(100))
+            )
+        }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewHomeHeader() {
+    HomeHeader(
+        searchText = "",
+        onSearchTextChanged = {}
+    )
 }

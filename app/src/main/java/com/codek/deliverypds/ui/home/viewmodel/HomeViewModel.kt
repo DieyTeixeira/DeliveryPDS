@@ -12,8 +12,10 @@ import coil.ImageLoader
 import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.codek.deliverypds.ui.home.state.Category
 import com.codek.deliverypds.ui.home.state.CategoryUrl
 import com.codek.deliverypds.ui.home.state.Product
+import com.codek.deliverypds.ui.home.state.categories
 import com.codek.deliverypds.ui.home.state.categoriesUrl
 import com.codek.deliverypds.ui.home.state.products
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +32,7 @@ class HomeViewModel(private val context: Context) : ViewModel() {
                     it.name.contains(searchText, ignoreCase = true)
         }
 
-    val category: List<CategoryUrl> = categoriesUrl
+    val category: List<Category> = categories
 
     suspend fun preloadImages() {
         val imageLoader = ImageLoader.Builder(context)
@@ -39,7 +41,7 @@ class HomeViewModel(private val context: Context) : ViewModel() {
             .build()
 
         withContext(Dispatchers.IO) {
-            categoriesUrl.forEach { category ->
+            categories.forEach { category ->
                 val request = ImageRequest.Builder(context)
                     .data(category.imageRes)
                     .allowHardware(false)  // Certifique-se de não usar o cache de hardware

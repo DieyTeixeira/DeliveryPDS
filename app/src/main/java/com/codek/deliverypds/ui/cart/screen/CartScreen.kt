@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.codek.deliverypds.app.barnavigation.BarNavigation
+import com.codek.deliverypds.app.barnavigation.BottomBarNavigation
 import com.codek.deliverypds.app.theme.ColorSec
 import com.codek.deliverypds.app.theme.Dark
 import com.codek.deliverypds.ui.cart.components.CartHeader
@@ -34,121 +36,106 @@ import com.codek.deliverypds.ui.cart.viewmodel.CartViewModel
 @Composable
 fun CartScreen(
     cartViewModel: CartViewModel,
-    onNavigateToHome: () -> Unit = {}
+    onNavigateToHome: () -> Unit = {},
+    onNavigateToPhoto: () -> Unit = {},
+    onSignOutClick: () -> Unit = {}
 ) {
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.LightGray.copy(alpha = 0.5f)),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+    BarNavigation(
+        onNavigateToHome = { onNavigateToHome() },
+        onNavigateToConfig = { onNavigateToPhoto() },
+        onSignOut = { onSignOutClick() }
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(30.dp)
-                .background(Dark)
-        )
-
-        // Header
-        CartHeader()
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(15.dp),
+                .background(Color.LightGray.copy(alpha = 0.5f)),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (cartViewModel.items.isNotEmpty()) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(cartViewModel.items) { item ->
-                        CartItemRow(
-                            viewModel = cartViewModel,
-                            item = item,
-                            onDelete = { itemToDelete ->
-                                cartViewModel.removeItem(itemToDelete.id)
-                            }
-                        )
-                    }
-                }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Color.LightGray,
-                            RoundedCornerShape(16.dp)
-                        )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Total do Carrinho:",
-                            modifier = Modifier.padding(16.dp),
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = cartViewModel.formatPrice(cartViewModel.totalCartPrice()),
-                            modifier = Modifier.padding(16.dp),
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-            } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Spacer(modifier = Modifier.height(50.dp))
-                    Text(
-                        text = "Seu carrinho está vazio.",
-                        color = Color.Gray,
-                        fontSize = 16.sp
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(25.dp))
-            Row(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth()
+                    .height(30.dp)
+                    .background(Dark)
+            )
+
+            // Header
+            CartHeader()
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(15.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(
-                    modifier = Modifier
-                        .width(175.dp)
-                        .height(40.dp)
-                        .background(
-                            ColorSec,
-                            RoundedCornerShape(16.dp)
-                        )
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) { onNavigateToHome() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Continuar Comprando",
-                        color = Color.White,
-                        fontSize = 16.sp
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
                 if (cartViewModel.items.isNotEmpty()) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(cartViewModel.items) { item ->
+                            CartItemRow(
+                                viewModel = cartViewModel,
+                                item = item,
+                                onDelete = { itemToDelete ->
+                                    cartViewModel.removeItem(itemToDelete.id)
+                                }
+                            )
+                        }
+                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                Color.LightGray,
+                                RoundedCornerShape(16.dp)
+                            )
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Total do Carrinho:",
+                                modifier = Modifier.padding(16.dp),
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = cartViewModel.formatPrice(cartViewModel.totalCartPrice()),
+                                modifier = Modifier.padding(16.dp),
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(50.dp))
+                        Text(
+                            text = "Seu carrinho está vazio.",
+                            color = Color.Gray,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(25.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Box(
                         modifier = Modifier
                             .width(175.dp)
@@ -160,16 +147,40 @@ fun CartScreen(
                             .clickable(
                                 indication = null,
                                 interactionSource = remember { MutableInteractionSource() }
-                            ) {  },
+                            ) { onNavigateToHome() },
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Finalizar Compra",
+                            text = "Continuar Comprando",
                             color = Color.White,
                             fontSize = 16.sp
                         )
                     }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    if (cartViewModel.items.isNotEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .width(175.dp)
+                                .height(40.dp)
+                                .background(
+                                    ColorSec,
+                                    RoundedCornerShape(16.dp)
+                                )
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {  },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Finalizar Compra",
+                                color = Color.White,
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
                 }
+                Spacer(modifier = Modifier.height(55.dp))
             }
         }
     }

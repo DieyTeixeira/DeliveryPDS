@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,10 +43,10 @@ fun HomeProducts(
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(15.dp),
+            .padding(15.dp, 0.dp),
         columns = GridCells.Fixed(2),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(0.dp),
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(filteredProducts.size) { index ->
             val product = filteredProducts[index]
@@ -66,52 +69,67 @@ fun ProductCard(
     onClick: () -> Unit
 ) {
 
-    Box(
+    Column(
         modifier = Modifier
             .width(150.dp)
-            .height(220.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
+            .height(235.dp),
+        verticalArrangement = Arrangement.Center
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxWidth()
+                .height(220.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.White)
+                .clickable { onClick() },
+            contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painterResource(id = imageResource),
-                contentDescription = productName,
+            Column(
                 modifier = Modifier
-                    .size(120.dp)
-                    .clip(RoundedCornerShape(12.dp))
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .height(45.dp)
-                    .background(Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .padding(10.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = productName,
-                    softWrap = true,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center,
-                    color = Color.Black,
+                Box(
                     modifier = Modifier
-                        .padding(horizontal = 10.dp)
+                        .size(120.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = imageResource),
+                        contentDescription = productName,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(12.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .height(45.dp)
+                        .background(Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(12.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = productName,
+                        softWrap = true,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center,
+                        color = Color.Black,
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                    )
+                }
+                Text(
+                    text = cartViewModel.formatPrice(productPrice),
+                    fontSize = 18.sp,
+                    color = ColorSec
                 )
             }
-            Text(
-                text = cartViewModel.formatPrice(productPrice),
-                fontSize = 18.sp,
-                color = ColorSec
-            )
         }
     }
 }

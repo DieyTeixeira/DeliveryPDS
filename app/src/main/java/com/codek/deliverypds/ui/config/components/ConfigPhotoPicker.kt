@@ -166,8 +166,8 @@ fun ConfigPhotoPicker(
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.LightGray,
             unfocusedIndicatorColor = Color.Transparent,
-            focusedContainerColor = Color.LightGray.copy(alpha = 0.5f),
-            unfocusedContainerColor = Color.LightGray.copy(alpha = 0.5f),
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
             disabledIndicatorColor = Color.Gray,
             errorIndicatorColor = Color.Red
         )

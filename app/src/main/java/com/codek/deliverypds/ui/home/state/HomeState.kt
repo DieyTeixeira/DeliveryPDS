@@ -45,5 +45,6 @@ val products = listOf(
     Product(4, "Mini Pizza Calabresa", 5.00, R.drawable.pizza_calabresa, 2),
     Product(5, "Pizza Broto 4 Queijos", 25.00, R.drawable.pizza_queijo, 2),
     Product(6, "Lasanha Bolonhesa", 30.00, R.drawable.lasanha_bolonhesa, 3),
-    Product(7, "Panqueca de Frango", 15.00, R.drawable.panqueca_frango, 4)
+    Product(7, "Panqueca Bolonhesa", 15.00, R.drawable.panqueca_bolonhesa, 4),
+    Product(8, "Panqueca de Frango", 15.00, R.drawable.panqueca_frango, 4)
 )
