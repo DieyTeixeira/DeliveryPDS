@@ -17,6 +17,7 @@ import com.codek.deliverypds.ui.home.navigation.homeScreen
 import com.codek.deliverypds.ui.home.viewmodel.HomeViewModel
 import com.codek.deliverypds.ui.login.navigation.loginScreen
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
+import com.codek.deliverypds.ui.payment.navigation.paymentScreen
 import com.codek.deliverypds.ui.splash.navigation.splashScreen
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -29,6 +30,7 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Cart : Screen("cart")
     object Config : Screen("config")
+    object Payment : Screen("payment")
 }
 
 fun NavHostController.navigateToScreen(route: String, popUpToRoute: String? = null) {
@@ -87,12 +89,17 @@ class MainActivity : ComponentActivity() {
                         cartViewModel = cartViewModel,
                         onNavigateToHome = { navController.navigateToScreen("home", "cart") },
                         onNavigateToConfig = { navController.navigateToScreen("config", "cart") },
-                        onSignOut = { navController.navigateToScreen("login", "cart") }
+                        onSignOut = { navController.navigateToScreen("login", "cart") },
+                        onNavigateToPayment = { navController.navigateToScreen("payment", "cart") }
                     )
                     configScreen(
                         configViewModel = configViewModel,
                         onNavigateToHome = { navController.navigateToScreen("home", "config") },
                         onSignOut = { navController.navigateToScreen("login", "config") }
+                    )
+                    paymentScreen(
+                        cartViewModel = cartViewModel,
+                        onNavigateToHome = { navController.navigateToScreen("home", "payment") }
                     )
                 }
             }

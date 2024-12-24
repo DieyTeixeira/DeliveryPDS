@@ -19,7 +19,8 @@ fun NavGraphBuilder.cartScreen(
     cartViewModel: CartViewModel,
     onNavigateToHome: () -> Unit,
     onNavigateToConfig: () -> Unit,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    onNavigateToPayment: () -> Unit
 ) {
     composable(
         route = Screen.Cart.route,
@@ -46,6 +47,9 @@ fun NavGraphBuilder.cartScreen(
                     viewModel.signOut()
                 }
                 onSignOut()
+            },
+            onNavigateToPayment = {
+                onNavigateToPayment()
             }
         )
     }

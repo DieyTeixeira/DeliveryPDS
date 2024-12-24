@@ -34,3 +34,4 @@ class AuthRepository(private val firebaseAuth: FirebaseAuth) {
         firebaseAuth.signOut()
     }
 }
+

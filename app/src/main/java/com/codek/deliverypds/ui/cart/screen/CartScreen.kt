@@ -25,8 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.codek.deliverypds.app.barnavigation.BarNavigation
-import com.codek.deliverypds.app.barnavigation.BottomBarNavigation
+import com.codek.deliverypds.app.configs.BarNavigation
 import com.codek.deliverypds.app.theme.ColorSec
 import com.codek.deliverypds.app.theme.Dark
 import com.codek.deliverypds.ui.cart.components.CartHeader
@@ -38,7 +37,8 @@ fun CartScreen(
     cartViewModel: CartViewModel,
     onNavigateToHome: () -> Unit = {},
     onNavigateToPhoto: () -> Unit = {},
-    onSignOutClick: () -> Unit = {}
+    onSignOutClick: () -> Unit = {},
+    onNavigateToPayment: () -> Unit = {}
 ) {
 
     BarNavigation(
@@ -129,7 +129,7 @@ fun CartScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(25.dp))
+                Spacer(modifier = Modifier.height(15.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -169,7 +169,7 @@ fun CartScreen(
                                 .clickable(
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() }
-                                ) {  },
+                                ) { onNavigateToPayment() },
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
