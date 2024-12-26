@@ -54,24 +54,11 @@ fun HomeScreen(
                     .fillMaxSize()
                     .background(Color.LightGray.copy(alpha = 0.5f))
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(30.dp)
-                        .background(Dark)
-                )
-
                 // Header
                 HomeHeader(
                     searchText = homeViewModel.searchText,
                     onSearchTextChanged = { homeViewModel.searchText = it }
                 )
-
-//                // Seção do logo
-//                HomeLogo(
-//                    onSignOutClick = { onSignOutClick() },
-//                    onPhotoClick = { onNavigateToPhoto() }
-//                )
 
                 // Seção de Categorias
                 HomeCategory(

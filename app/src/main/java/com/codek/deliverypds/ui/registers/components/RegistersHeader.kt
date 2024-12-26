@@ -1,4 +1,4 @@
-package com.codek.deliverypds.ui.payment.components
+package com.codek.deliverypds.ui.registers.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,14 +27,21 @@ import com.codek.deliverypds.R
 import com.codek.deliverypds.app.theme.Dark
 
 @Composable
-fun PaymentHeader() {
-    Column(
+fun RegistersHeader(
+    header: String
+) {
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-    ) {
-        Spacer(modifier = Modifier.height(30.dp))
+            .height(30.dp)
+            .background(Dark)
+    )
 
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -55,7 +62,7 @@ fun PaymentHeader() {
             ) {
                 Spacer(modifier = Modifier.width(20.dp))
                 Text(
-                    text = "Pagamento",
+                    text = header,
                     color = Color.White,
                     style = TextStyle(
                         fontSize = 25.sp

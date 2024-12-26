@@ -10,11 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ConfigViewModel(private val dropboxRepository: DropboxRepository) : ViewModel() {
+class RegistersViewModel(private val dropboxRepository: DropboxRepository) : ViewModel() {
 
-    fun uploadPhoto(context: Context, bitmap: Bitmap, fileName: String, onComplete: (String?) -> Unit) {
+    fun uploadPhotoProduct(context: Context, bitmap: Bitmap, fileName: String, onComplete: (String?) -> Unit) {
         viewModelScope.launch {
-            val sharedLink = dropboxRepository.uploadPhoto(bitmap, fileName)
+            val sharedLink = dropboxRepository.uploadPhotoProduct(bitmap, fileName)
             withContext(Dispatchers.Main) {
                 if (sharedLink != null) {
                     Toast.makeText(context, "Upload concluído com sucesso!", Toast.LENGTH_SHORT).show()
@@ -25,4 +25,6 @@ class ConfigViewModel(private val dropboxRepository: DropboxRepository) : ViewMo
             }
         }
     }
+
+
 }

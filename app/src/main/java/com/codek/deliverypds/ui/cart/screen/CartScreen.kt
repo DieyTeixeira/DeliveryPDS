@@ -53,13 +53,6 @@ fun CartScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(30.dp)
-                    .background(Dark)
-            )
-
             // Header
             CartHeader()
 

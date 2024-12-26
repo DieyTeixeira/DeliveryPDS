@@ -1,5 +1,5 @@
 [versions]
-agp = "8.9.0-alpha02"
+agp = "8.9.0-alpha07"
 coilCompose = "2.7.0"
 converterGson = "2.11.0"
 dropboxCoreSdk = "7.0.0"

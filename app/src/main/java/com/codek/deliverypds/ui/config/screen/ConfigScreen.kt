@@ -2,33 +2,44 @@ package com.codek.deliverypds.ui.config.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.ListAlt
+import androidx.compose.material.icons.outlined.ShoppingBasket
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.codek.deliverypds.app.configs.BarNavigation
-import com.codek.deliverypds.app.theme.Dark
 import com.codek.deliverypds.app.theme.ManageStatusBarIcons
+import com.codek.deliverypds.ui.config.components.ConfigButtons
 import com.codek.deliverypds.ui.config.components.ConfigHeader
-import com.codek.deliverypds.ui.config.components.ConfigPhotoPicker
-import com.codek.deliverypds.ui.config.viewmodel.ConfigViewModel
 
 @Composable
 fun ConfigScreen(
-    configViewModel: ConfigViewModel,
     onNavigateToHome: () -> Unit,
-    onSignOutClick: () -> Unit
+    onSignOutClick: () -> Unit,
+    onButtonClick: (String) -> Unit
 ) {
 
     // Cor dos ícones da status bar
     ManageStatusBarIcons(isIconBlack = false)
+
+    val destinations = listOf(
+        "Usuário" to Icons.Outlined.AccountCircle,
+        "Endereços" to Icons.Outlined.Home,
+        "Categorias" to Icons.Outlined.ListAlt,
+        "Produtos" to Icons.Outlined.ShoppingBasket
+    )
 
     BarNavigation(
         onNavigateToHome = { onNavigateToHome() },
@@ -43,20 +54,24 @@ fun ConfigScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(30.dp)
-                    .background(Dark)
-            )
-
             ConfigHeader()
 
-            Spacer(modifier = Modifier.height(24.dp))
-            ConfigPhotoPicker(
-                configViewModel = configViewModel,
-                onNavigateToHome = onNavigateToHome
-            )
+            Spacer(modifier = Modifier.height(15.dp))
+
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                items(destinations.size) { index ->
+                    val (name, icon) = destinations[index]
+                    ConfigButtons(name = name, icon = icon, onClick = { onButtonClick(name) })
+                }
+            }
+
         }
     }
 }

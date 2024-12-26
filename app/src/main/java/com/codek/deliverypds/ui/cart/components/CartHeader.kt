@@ -38,9 +38,15 @@ fun CartHeader() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .height(30.dp)
+            .background(Dark)
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
             .height(70.dp)
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()

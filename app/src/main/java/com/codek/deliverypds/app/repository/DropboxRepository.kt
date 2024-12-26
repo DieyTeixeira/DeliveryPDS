@@ -12,7 +12,7 @@ import java.io.ByteArrayOutputStream
 
 class DropboxRepository(private val accessToken: String) {
 
-    suspend fun uploadPhoto(bitmap: Bitmap, fileName: String): String? {
+    suspend fun uploadPhotoProduct(bitmap: Bitmap, fileName: String): String? {
         return withContext(Dispatchers.IO) {
             try {
                 val dbxClient = getDropboxClient()

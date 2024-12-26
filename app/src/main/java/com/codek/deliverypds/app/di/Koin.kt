@@ -5,7 +5,7 @@ import com.codek.deliverypds.app.repository.DropboxRepository
 import com.codek.deliverypds.ui.cart.viewmodel.CartViewModel
 import com.codek.deliverypds.ui.home.viewmodel.HomeViewModel
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
-import com.codek.deliverypds.ui.config.viewmodel.ConfigViewModel
+import com.codek.deliverypds.ui.config.viewmodel.RegistersViewModel
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -20,6 +20,6 @@ val appModule = module {
     viewModel { LoginViewModel(get()) } // firebase auth
     viewModel { HomeViewModel(get()) } // firebase auth
     viewModel { CartViewModel() }
-    viewModel { ConfigViewModel(get()) } // dropbox
+    viewModel { RegistersViewModel(get()) } // dropbox
 
 }
