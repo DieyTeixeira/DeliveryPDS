@@ -38,7 +38,8 @@ fun ConfigScreen(
         "Usuário" to Icons.Outlined.AccountCircle,
         "Endereços" to Icons.Outlined.Home,
         "Categorias" to Icons.Outlined.ListAlt,
-        "Produtos" to Icons.Outlined.ShoppingBasket
+        "ProdutosEdit" to Icons.Outlined.ShoppingBasket,
+        "ProdutosList" to Icons.Outlined.ShoppingBasket
     )
 
     BarNavigation(

@@ -9,22 +9,22 @@ import com.codek.deliverypds.app.animations.exitTransition
 import com.codek.deliverypds.app.animations.popEnterTransition
 import com.codek.deliverypds.app.animations.popExitTransition
 import com.codek.deliverypds.app.repository.AuthRepository
-import com.codek.deliverypds.ui.config.screen.ConfigScreen
 import com.codek.deliverypds.ui.config.viewmodel.RegistersViewModel
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
-import com.codek.deliverypds.ui.registers.product.screen.ProductScreen
-import com.codek.deliverypds.ui.registers.user.screen.UserScreen
+import com.codek.deliverypds.ui.registers.product.screen.ProductScreenEdit
+import com.codek.deliverypds.ui.registers.product.screen.ProductScreenList
+import com.codek.deliverypds.ui.registers.product.viewmodel.ProductViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
-fun NavGraphBuilder.productScreen(
-    registersViewModel: RegistersViewModel,
+fun NavGraphBuilder.productScreenList(
+    productViewModel: ProductViewModel,
     onNavigateToHome: () -> Unit,
     onNavigateToConfig: () -> Unit,
     onSignOut: () -> Unit
 ) {
     composable(
-        route = Screen.Product.route,
+        route = Screen.ProductList.route,
         enterTransition = { enterTransition() },
         exitTransition = { exitTransition() },
         popEnterTransition = { popEnterTransition() },
@@ -35,8 +35,8 @@ fun NavGraphBuilder.productScreen(
         val viewModel = LoginViewModel(authRepository)
         val scope = rememberCoroutineScope()
 
-        ProductScreen(
-            registersViewModel = registersViewModel,
+        ProductScreenList(
+            productViewModel = productViewModel,
             onNavigateToHome = {
                 onNavigateToHome()
             },

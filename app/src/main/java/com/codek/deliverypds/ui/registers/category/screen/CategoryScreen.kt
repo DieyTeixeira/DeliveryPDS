@@ -33,7 +33,7 @@ import com.codek.deliverypds.app.theme.ColorSec
 import com.codek.deliverypds.ui.config.viewmodel.RegistersViewModel
 import com.codek.deliverypds.ui.registers.components.RegistersHeader
 import com.codek.deliverypds.ui.registers.components.RegistersPhotoPicker
-import com.codek.deliverypds.ui.registers.components.UserFieldText
+import com.codek.deliverypds.ui.registers.components.FieldTextString
 
 @Composable
 fun CategoryScreen(
@@ -87,7 +87,7 @@ fun CategoryScreen(
                         verticalArrangement = Arrangement.spacedBy(15.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        UserFieldText(
+                        FieldTextString(
                             text = categoryName,
                             onTextChange = { categoryName = it },
                             placeHolder = "Nome da Categoria"
@@ -106,36 +106,36 @@ fun CategoryScreen(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
                         ) {
-                            if (bitmapImage != null && categoryName.isNotBlank()) {
-                                registersViewModel.uploadPhotoProduct(
-                                    context = context,
-                                    bitmap = bitmapImage!!,
-                                    fileName = categoryName
-                                ) { link ->
-                                    if (link != null) {
-                                        linkPhotoCategory = link
-                                        clipboardManager.setText(AnnotatedString(linkPhotoCategory))
-                                        Toast.makeText(
-                                            context,
-                                            "Categoria cadastrada com sucesso!",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        onNavigateToHome()
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Erro ao cadastrar a categoria.",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                            } else {
-                                val message = when {
-                                    categoryName.isBlank() -> "Por favor, insira o nome da categoria!"
-                                    else -> "Selecione uma imagem da categoria!"
-                                }
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                            }
+//                            if (bitmapImage != null && categoryName.isNotBlank()) {
+//                                registersViewModel.uploadPhotoProduct(
+//                                    context = context,
+//                                    bitmap = bitmapImage!!,
+//                                    fileName = categoryName
+//                                ) { link ->
+//                                    if (link != null) {
+//                                        linkPhotoCategory = link
+//                                        clipboardManager.setText(AnnotatedString(linkPhotoCategory))
+//                                        Toast.makeText(
+//                                            context,
+//                                            "Categoria cadastrada com sucesso!",
+//                                            Toast.LENGTH_SHORT
+//                                        ).show()
+//                                        onNavigateToHome()
+//                                    } else {
+//                                        Toast.makeText(
+//                                            context,
+//                                            "Erro ao cadastrar a categoria.",
+//                                            Toast.LENGTH_SHORT
+//                                        ).show()
+//                                    }
+//                                }
+//                            } else {
+//                                val message = when {
+//                                    categoryName.isBlank() -> "Por favor, insira o nome da categoria!"
+//                                    else -> "Selecione uma imagem da categoria!"
+//                                }
+//                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+//                            }
                         },
                     contentAlignment = Alignment.Center
                 ) {

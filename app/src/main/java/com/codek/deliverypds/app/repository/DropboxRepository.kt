@@ -16,7 +16,7 @@ class DropboxRepository(private val accessToken: String) {
         return withContext(Dispatchers.IO) {
             try {
                 val dbxClient = getDropboxClient()
-                val dropboxPath = "/cat_$fileName.jpg"
+                val dropboxPath = "/$fileName.jpg"
 
                 // Converte o Bitmap para InputStream
                 val outputStream = ByteArrayOutputStream()

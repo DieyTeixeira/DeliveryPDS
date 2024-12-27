@@ -19,9 +19,13 @@ import com.codek.deliverypds.ui.login.navigation.loginScreen
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
 import com.codek.deliverypds.ui.payment.navigation.paymentScreen
 import com.codek.deliverypds.ui.registers.address.navigation.addressScreen
+import com.codek.deliverypds.ui.registers.address.viewmodel.AddressViewModel
 import com.codek.deliverypds.ui.registers.category.navigation.categoryScreen
-import com.codek.deliverypds.ui.registers.product.navigation.productScreen
+import com.codek.deliverypds.ui.registers.product.navigation.productScreenEdit
+import com.codek.deliverypds.ui.registers.product.navigation.productScreenList
+import com.codek.deliverypds.ui.registers.product.viewmodel.ProductViewModel
 import com.codek.deliverypds.ui.registers.user.navigation.userScreen
+import com.codek.deliverypds.ui.registers.user.viewmodel.UserViewModel
 import com.codek.deliverypds.ui.splash.navigation.splashScreen
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -38,7 +42,8 @@ sealed class Screen(val route: String) {
     object User : Screen("user")
     object Address : Screen("address")
     object Category : Screen("category")
-    object Product : Screen("product")
+    object ProductEdit : Screen("productedit")
+    object ProductList : Screen("productlist")
 }
 
 fun NavHostController.navigateToScreen(route: String, popUpToRoute: String? = null) {
@@ -59,6 +64,9 @@ class MainActivity : ComponentActivity() {
         val cartViewModel: CartViewModel by viewModel()
         val homeViewModel: HomeViewModel by viewModel()
         val registersViewModel: RegistersViewModel by viewModel()
+        val userViewModel: UserViewModel by viewModel()
+        val addressViewModel: AddressViewModel by viewModel()
+        val productViewModel: ProductViewModel by viewModel()
 
         enableEdgeToEdge()
         setContent {
@@ -110,18 +118,27 @@ class MainActivity : ComponentActivity() {
                         onNavigateToUser = { navController.navigateToScreen("user", "config") },
                         onNavigateToAddress = { navController.navigateToScreen("address", "config") },
                         onNavigateToCategory = { navController.navigateToScreen("category", "config") },
-                        onNavigateToProduct = { navController.navigateToScreen("product", "config") }
+                        onNavigateToProductEdit = { navController.navigateToScreen("productedit", "config") },
+                        onNavigateToProductList = { navController.navigateToScreen("productlist", "config") }
                     )
                     userScreen(
+                        userViewModel = userViewModel,
                         onNavigateToHome = { navController.navigateToScreen("home", "user") },
                         onNavigateToConfig = { navController.navigateToScreen("config", "user") },
                         onSignOut = { navController.navigateToScreen("login", "user") }
                     )
-                    productScreen(
+                    productScreenEdit(
                         registersViewModel = registersViewModel,
-                        onNavigateToHome = { navController.navigateToScreen("home", "product") },
-                        onNavigateToConfig = { navController.navigateToScreen("config", "product") },
-                        onSignOut = { navController.navigateToScreen("login", "product") }
+                        productViewModel = productViewModel,
+                        onNavigateToHome = { navController.navigateToScreen("home", "productedit") },
+                        onNavigateToConfig = { navController.navigateToScreen("config", "productedit") },
+                        onSignOut = { navController.navigateToScreen("login", "productedit") }
+                    )
+                    productScreenList(
+                        productViewModel = productViewModel,
+                        onNavigateToHome = { navController.navigateToScreen("home", "productlist") },
+                        onNavigateToConfig = { navController.navigateToScreen("config", "productlist") },
+                        onSignOut = { navController.navigateToScreen("login", "productlist") }
                     )
                     categoryScreen(
                         registersViewModel = registersViewModel,
@@ -130,6 +147,7 @@ class MainActivity : ComponentActivity() {
                         onSignOut = { navController.navigateToScreen("login", "category") }
                     )
                     addressScreen(
+                        addressViewModel = addressViewModel,
                         onNavigateToHome = { navController.navigateToScreen("home", "address") },
                         onNavigateToConfig = { navController.navigateToScreen("config", "address") },
                         onSignOut = { navController.navigateToScreen("login", "address") }

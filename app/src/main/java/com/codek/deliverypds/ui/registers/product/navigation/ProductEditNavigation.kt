@@ -1,4 +1,4 @@
-package com.codek.deliverypds.ui.registers.user.navigation
+package com.codek.deliverypds.ui.registers.product.navigation
 
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavGraphBuilder
@@ -9,21 +9,22 @@ import com.codek.deliverypds.app.animations.exitTransition
 import com.codek.deliverypds.app.animations.popEnterTransition
 import com.codek.deliverypds.app.animations.popExitTransition
 import com.codek.deliverypds.app.repository.AuthRepository
-import com.codek.deliverypds.ui.config.screen.ConfigScreen
+import com.codek.deliverypds.ui.config.viewmodel.RegistersViewModel
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
-import com.codek.deliverypds.ui.registers.user.screen.UserScreen
-import com.codek.deliverypds.ui.registers.user.viewmodel.UserViewModel
+import com.codek.deliverypds.ui.registers.product.screen.ProductScreenEdit
+import com.codek.deliverypds.ui.registers.product.viewmodel.ProductViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
-fun NavGraphBuilder.userScreen(
-    userViewModel: UserViewModel,
+fun NavGraphBuilder.productScreenEdit(
+    registersViewModel: RegistersViewModel,
+    productViewModel: ProductViewModel,
     onNavigateToHome: () -> Unit,
     onNavigateToConfig: () -> Unit,
     onSignOut: () -> Unit
 ) {
     composable(
-        route = Screen.User.route,
+        route = Screen.ProductEdit.route,
         enterTransition = { enterTransition() },
         exitTransition = { exitTransition() },
         popEnterTransition = { popEnterTransition() },
@@ -34,8 +35,9 @@ fun NavGraphBuilder.userScreen(
         val viewModel = LoginViewModel(authRepository)
         val scope = rememberCoroutineScope()
 
-        UserScreen(
-            userViewModel = userViewModel,
+        ProductScreenEdit(
+            registersViewModel = registersViewModel,
+            productViewModel = productViewModel,
             onNavigateToHome = {
                 onNavigateToHome()
             },

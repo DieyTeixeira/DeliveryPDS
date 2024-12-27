@@ -1,6 +1,5 @@
 package com.codek.deliverypds.ui.registers.user.screen
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,30 +15,43 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codek.deliverypds.app.configs.BarNavigation
+import com.codek.deliverypds.app.theme.ColorError
 import com.codek.deliverypds.app.theme.ColorSec
-import com.codek.deliverypds.ui.registers.components.UserFieldText
+import com.codek.deliverypds.app.theme.ColorSucess
+import com.codek.deliverypds.app.theme.DarkColorError
+import com.codek.deliverypds.app.theme.DarkColorSucess
+import com.codek.deliverypds.ui.registers.components.FieldTextNumber
+import com.codek.deliverypds.ui.registers.components.FieldTextString
 import com.codek.deliverypds.ui.registers.components.RegistersHeader
+import com.codek.deliverypds.ui.registers.components.RegistersLoading
+import com.codek.deliverypds.ui.registers.components.RegistersMessage
+import com.codek.deliverypds.ui.registers.components.formatCpfMask
+import com.codek.deliverypds.ui.registers.components.formatPhoneMask
+import com.codek.deliverypds.ui.registers.user.state.MessageUserState
+import com.codek.deliverypds.ui.registers.user.viewmodel.UserViewModel
 
 @Composable
 fun UserScreen(
+    userViewModel: UserViewModel,
     onNavigateToHome: () -> Unit,
     onNavigateToConfig: () -> Unit,
     onSignOutClick: () -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-    var cpf by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
+
+    val userState = userViewModel.userState.collectAsState()
+    val message = userViewModel.message.collectAsState()
+
+    LaunchedEffect(Unit) {
+        userViewModel.findUser()
+    }
 
     BarNavigation(
         onNavigateToHome = { onNavigateToHome() },
@@ -70,56 +82,86 @@ fun UserScreen(
                     verticalArrangement = Arrangement.spacedBy(15.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    UserFieldText(
-                        text = name,
-                        onTextChange = { name = it },
+                    FieldTextString(
+                        text = userState.value.name,
+                        onTextChange = { userViewModel.updateName(it) },
                         placeHolder = "Nome"
                     )
-                    UserFieldText(
-                        text = cpf,
-                        onTextChange = { cpf = it },
+                    FieldTextNumber(
+                        text = formatCpfMask(userState.value.cpf),
+                        onTextChange = { userViewModel.updateCpf(it) },
                         placeHolder = "CPF"
                     )
-                    UserFieldText(
-                        text = phone,
-                        onTextChange = { phone = it },
+                    FieldTextNumber(
+                        text = formatPhoneMask(userState.value.phone),
+                        onTextChange = { userViewModel.updatePhone(it) },
                         placeHolder = "Telefone"
                     )
                 }
-
-
-
                 Box(
                     modifier = Modifier
-                        .width(175.dp)
-                        .height(40.dp)
-                        .background(
-                            ColorSec,
-                            RoundedCornerShape(16.dp)
-                        )
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) { /* cadastrar usuário */ },
+                        .fillMaxWidth()
+                        .height(80.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Salvar",
-                        color = Color.White
-                    )
+                    when {
+                        userViewModel.isLoading.collectAsState().value -> RegistersLoading(Color.DarkGray)
+                        message.value is MessageUserState.Success -> RegistersMessage(
+                            message = (message.value as MessageUserState.Success).message,
+                            color = Pair(ColorSucess, DarkColorSucess),
+                            onNavigateToConfig = onNavigateToConfig
+                        )
+                        message.value is MessageUserState.Error -> RegistersMessage(
+                            message = (message.value as MessageUserState.Error).message,
+                            color = Pair(ColorError, DarkColorError),
+                            onNavigateToConfig = { }
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                if (userViewModel.isLoading.collectAsState().value) {
+                    Box(
+                        modifier = Modifier
+                            .width(175.dp)
+                            .height(40.dp)
+                            .background(
+                                Color.LightGray,
+                                RoundedCornerShape(16.dp)
+                            )
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {  },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Salvar",
+                            color = Color.White
+                        )
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .width(175.dp)
+                            .height(40.dp)
+                            .background(
+                                ColorSec,
+                                RoundedCornerShape(16.dp)
+                            )
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) { userViewModel.salvarUser() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Salvar",
+                            color = Color.White
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(55.dp))
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewUserScreen() {
-    UserScreen(
-        onNavigateToHome = {},
-        onNavigateToConfig = {},
-        onSignOutClick = {}
-    )
 }

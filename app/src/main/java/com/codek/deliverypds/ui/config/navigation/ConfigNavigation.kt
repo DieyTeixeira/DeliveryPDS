@@ -20,7 +20,8 @@ fun NavGraphBuilder.configScreen(
     onNavigateToUser: () -> Unit,
     onNavigateToAddress: () -> Unit,
     onNavigateToCategory: () -> Unit,
-    onNavigateToProduct: () -> Unit
+    onNavigateToProductEdit: () -> Unit,
+    onNavigateToProductList: () -> Unit
 ) {
     composable(
         route = Screen.Config.route,
@@ -55,8 +56,11 @@ fun NavGraphBuilder.configScreen(
                     "Categorias" -> {
                         onNavigateToCategory()
                     }
-                    "Produtos" -> {
-                        onNavigateToProduct()
+                    "ProdutosEdit" -> {
+                        onNavigateToProductEdit()
+                    }
+                    "ProdutosList" -> {
+                        onNavigateToProductList()
                     }
                 }
             }
