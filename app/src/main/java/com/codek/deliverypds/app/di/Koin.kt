@@ -17,14 +17,11 @@ import com.google.firebase.storage.FirebaseStorage
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val dropboxToken = "sl.CDYthIWmYOKB7PTaVW7WhXlI6kvdFC6xT8wWGFZdyq0D00UGUgNSZxQq83mqwwpt3bzY7PvKjm6cncM81y4DOUVYdQuuZA8-YUkSkuDB86j__ACHDn_p_0N4tT_YbJBWMRzQHJj55e_6qiSbKw1lNsY"
-
 val appModule = module {
 
     single { AuthRepository(FirebaseAuth.getInstance()) }
     single { FirestoreRepository(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance()) }
     single { StorageRepository(FirebaseStorage.getInstance()) }
-    single { DropboxRepository(dropboxToken) }
 
     viewModel { LoginViewModel(get()) } // firebase auth
     viewModel { HomeViewModel(get()) } // firebase auth
