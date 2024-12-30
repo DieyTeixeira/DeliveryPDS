@@ -14,8 +14,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,9 +57,15 @@ fun ProductScreenEdit(
 
     val context = LocalContext.current
     var bitmapImage: Bitmap? by remember { mutableStateOf(null) }
+    var expanded by remember { mutableStateOf(false) }
 
     val productState = productViewModel.productState.collectAsState()
+    val categories = productViewModel.categories.collectAsState()
     val message = productViewModel.message.collectAsState()
+
+    LaunchedEffect(Unit) {
+        productViewModel.loadCategories()
+    }
 
     BarNavigation(
         onNavigateToHome = { onNavigateToHome() },
@@ -96,17 +107,45 @@ fun ProductScreenEdit(
                     ) {
                         FieldTextString(
                             text = productState.value.name,
-                            onTextChange = { productViewModel.updateName(it) },
+                            onTextChange = { productViewModel.updateProductName(it) },
                             placeHolder = "Nome do Produto"
                         )
+//                        Box(modifier = Modifier.fillMaxWidth()) {
+//                            TextField(
+//                                value = productState.value.category,
+//                                onValueChange = {},
+//                                modifier = Modifier.clickable { expanded = true },
+//                                readOnly = true,
+//                                placeholder = { Text("Selecione uma Categoria") },
+//                                colors = TextFieldDefaults.textFieldColors(
+//                                    backgroundColor = Color.White
+//                                )
+//                            )
+//                            DropdownMenu(
+//                                expanded = expanded,
+//                                onDismissRequest = { expanded = false }
+//                            ) {
+//                                categories.value.forEach { category ->
+//                                    DropdownMenuItem(onClick = {
+//                                        productViewModel.updateSelectedCategory(
+//                                            category.category,
+//                                            category.itemID
+//                                        )
+//                                        expanded = false
+//                                    }) {
+//                                        Text(category.category)
+//                                    }
+//                                }
+//                            }
+//                        }
                         FieldTextString(
                             text = productState.value.category,
-                            onTextChange = { productViewModel.updateCategory(it) },
+                            onTextChange = { productViewModel.updateProductCategory(it) },
                             placeHolder = "Categoria do Produto"
                         )
                         FieldTextString(
                             text = productState.value.value,
-                            onTextChange = { productViewModel.updateValue(it) },
+                            onTextChange = { productViewModel.updateProductValue(it) },
                             placeHolder = "Valor do Produto"
                         )
                     }
@@ -145,13 +184,13 @@ fun ProductScreenEdit(
                             interactionSource = remember { MutableInteractionSource() }
                         ) {
                             if (bitmapImage != null) {
-                                registersViewModel.uploadPhotoProduct(
+                                registersViewModel.uploadPhoto(
                                     context = context,
                                     bitmap = bitmapImage!!,
                                     fileName = productState.value.name
                                 ) { link ->
                                     if (link != null) {
-                                        productViewModel.updateLink(link)
+                                        productViewModel.updateProductLink(link)
                                         productViewModel.salvarProduct()
                                     }
                                 }

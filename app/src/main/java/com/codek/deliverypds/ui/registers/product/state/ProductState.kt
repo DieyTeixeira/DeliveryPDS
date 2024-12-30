@@ -8,6 +8,7 @@ sealed class MessageProductState(val message: String) {
 data class ProductUiState(
     val name: String = "",
     val category: String = "",
+    val categoryID: String = "",
     val value: String = "",
     val link: String = ""
 )

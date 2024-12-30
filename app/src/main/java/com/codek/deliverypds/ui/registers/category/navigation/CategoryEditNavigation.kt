@@ -1,4 +1,4 @@
-package com.codek.deliverypds.ui.config.navigation
+package com.codek.deliverypds.ui.registers.category.navigation
 
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavGraphBuilder
@@ -9,23 +9,22 @@ import com.codek.deliverypds.app.animations.exitTransition
 import com.codek.deliverypds.app.animations.popEnterTransition
 import com.codek.deliverypds.app.animations.popExitTransition
 import com.codek.deliverypds.app.repository.AuthRepository
-import com.codek.deliverypds.ui.config.screen.ConfigScreen
+import com.codek.deliverypds.ui.config.viewmodel.RegistersViewModel
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
+import com.codek.deliverypds.ui.registers.category.screen.CategoryScreenEdit
+import com.codek.deliverypds.ui.registers.category.viewmodel.CategoryViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
-fun NavGraphBuilder.configScreen(
+fun NavGraphBuilder.categoryScreenEdit(
+    registersViewModel: RegistersViewModel,
+    categoryViewModel: CategoryViewModel,
     onNavigateToHome: () -> Unit,
-    onSignOut: () -> Unit,
-    onNavigateToUser: () -> Unit,
-    onNavigateToAddress: () -> Unit,
-    onNavigateToCategoryEdit: () -> Unit,
-    onNavigateToProductEdit: () -> Unit,
-    onNavigateToCategoryList: () -> Unit,
-    onNavigateToProductList: () -> Unit
+    onNavigateToConfig: () -> Unit,
+    onSignOut: () -> Unit
 ) {
     composable(
-        route = Screen.Config.route,
+        route = Screen.CategoryEdit.route,
         enterTransition = { enterTransition() },
         exitTransition = { exitTransition() },
         popEnterTransition = { popEnterTransition() },
@@ -36,37 +35,20 @@ fun NavGraphBuilder.configScreen(
         val viewModel = LoginViewModel(authRepository)
         val scope = rememberCoroutineScope()
 
-        ConfigScreen(
+        CategoryScreenEdit(
+            registersViewModel = registersViewModel,
+            categoryViewModel = categoryViewModel,
             onNavigateToHome = {
                 onNavigateToHome()
+            },
+            onNavigateToConfig = {
+                onNavigateToConfig()
             },
             onSignOutClick = {
                 scope.launch {
                     viewModel.signOut()
                 }
                 onSignOut()
-            },
-            onButtonClick = {
-                when (it) {
-                    "Usuário" -> {
-                        onNavigateToUser()
-                    }
-                    "Endereços" -> {
-                        onNavigateToAddress()
-                    }
-                    "CategoriasEdit" -> {
-                        onNavigateToCategoryEdit()
-                    }
-                    "ProdutosEdit" -> {
-                        onNavigateToProductEdit()
-                    }
-                    "CategoriasList" -> {
-                        onNavigateToCategoryList()
-                    }
-                    "ProdutosList" -> {
-                        onNavigateToProductList()
-                    }
-                }
             }
         )
 

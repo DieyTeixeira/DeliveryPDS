@@ -1,7 +1,6 @@
 package com.codek.deliverypds.ui.registers.category.screen
 
 import android.graphics.Bitmap
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,30 +24,37 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.codek.deliverypds.app.configs.BarNavigation
+import com.codek.deliverypds.app.theme.ColorError
 import com.codek.deliverypds.app.theme.ColorSec
+import com.codek.deliverypds.app.theme.ColorSucess
+import com.codek.deliverypds.app.theme.DarkColorError
+import com.codek.deliverypds.app.theme.DarkColorSucess
 import com.codek.deliverypds.ui.config.viewmodel.RegistersViewModel
+import com.codek.deliverypds.ui.registers.category.state.MessageCategoryState
+import com.codek.deliverypds.ui.registers.category.viewmodel.CategoryViewModel
 import com.codek.deliverypds.ui.registers.components.RegistersHeader
 import com.codek.deliverypds.ui.registers.components.RegistersPhotoPicker
 import com.codek.deliverypds.ui.registers.components.FieldTextString
+import com.codek.deliverypds.ui.registers.components.RegistersLoading
+import com.codek.deliverypds.ui.registers.components.RegistersMessage
 
 @Composable
-fun CategoryScreen(
+fun CategoryScreenEdit(
     registersViewModel: RegistersViewModel,
+    categoryViewModel: CategoryViewModel,
     onNavigateToHome: () -> Unit,
     onNavigateToConfig: () -> Unit,
     onSignOutClick: () -> Unit
 ) {
 
     val context = LocalContext.current
-    val clipboardManager = LocalClipboardManager.current
-    var linkPhotoCategory by remember { mutableStateOf("") }
-    var categoryName by remember { mutableStateOf("") }
     var bitmapImage: Bitmap? by remember { mutableStateOf(null) }
+
+    val categoryState = categoryViewModel.categoryState.collectAsState()
+    val message = categoryViewModel.message.collectAsState()
 
     BarNavigation(
         onNavigateToHome = { onNavigateToHome() },
@@ -61,7 +68,7 @@ fun CategoryScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            RegistersHeader("Cadastrar Categoria")
+            RegistersHeader("Cadastrar Categorias")
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -88,12 +95,33 @@ fun CategoryScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         FieldTextString(
-                            text = categoryName,
-                            onTextChange = { categoryName = it },
+                            text = categoryState.value.category,
+                            onTextChange = { categoryViewModel.updateCategoryName(it) },
                             placeHolder = "Nome da Categoria"
                         )
                     }
                 }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    when {
+                        categoryViewModel.isLoading.collectAsState().value -> RegistersLoading(Color.DarkGray)
+                        message.value is MessageCategoryState.Success -> RegistersMessage(
+                            message = (message.value as MessageCategoryState.Success).message,
+                            color = Pair(ColorSucess, DarkColorSucess),
+                            onNavigateToConfig = onNavigateToConfig
+                        )
+                        message.value is MessageCategoryState.Error -> RegistersMessage(
+                            message = (message.value as MessageCategoryState.Error).message,
+                            color = Pair(ColorError, DarkColorError),
+                            onNavigateToConfig = { }
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(15.dp))
                 Box(
                     modifier = Modifier
                         .width(175.dp)
@@ -106,36 +134,18 @@ fun CategoryScreen(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
                         ) {
-//                            if (bitmapImage != null && categoryName.isNotBlank()) {
-//                                registersViewModel.uploadPhotoProduct(
-//                                    context = context,
-//                                    bitmap = bitmapImage!!,
-//                                    fileName = categoryName
-//                                ) { link ->
-//                                    if (link != null) {
-//                                        linkPhotoCategory = link
-//                                        clipboardManager.setText(AnnotatedString(linkPhotoCategory))
-//                                        Toast.makeText(
-//                                            context,
-//                                            "Categoria cadastrada com sucesso!",
-//                                            Toast.LENGTH_SHORT
-//                                        ).show()
-//                                        onNavigateToHome()
-//                                    } else {
-//                                        Toast.makeText(
-//                                            context,
-//                                            "Erro ao cadastrar a categoria.",
-//                                            Toast.LENGTH_SHORT
-//                                        ).show()
-//                                    }
-//                                }
-//                            } else {
-//                                val message = when {
-//                                    categoryName.isBlank() -> "Por favor, insira o nome da categoria!"
-//                                    else -> "Selecione uma imagem da categoria!"
-//                                }
-//                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-//                            }
+                            if (bitmapImage != null) {
+                                registersViewModel.uploadPhoto(
+                                    context = context,
+                                    bitmap = bitmapImage!!,
+                                    fileName = categoryState.value.category
+                                ) { link ->
+                                    if (link != null) {
+                                        categoryViewModel.updateCategoryLink(link)
+                                        categoryViewModel.salvarCategory()
+                                    }
+                                }
+                            }
                         },
                     contentAlignment = Alignment.Center
                 ) {

@@ -1,4 +1,4 @@
-package com.codek.deliverypds.ui.registers.product.screen
+package com.codek.deliverypds.ui.registers.category.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,20 +37,22 @@ import com.codek.deliverypds.app.configs.BarNavigation
 import com.codek.deliverypds.app.theme.ColorError
 import com.codek.deliverypds.app.theme.ColorSec
 import com.codek.deliverypds.app.theme.DarkColorError
+import com.codek.deliverypds.ui.registers.category.state.CategoryUiState
+import com.codek.deliverypds.ui.registers.category.viewmodel.CategoryViewModel
 import com.codek.deliverypds.ui.registers.components.RegistersHeader
 import com.codek.deliverypds.ui.registers.product.state.ProductUiState
 import com.codek.deliverypds.ui.registers.product.viewmodel.ProductViewModel
 
 @Composable
-fun ProductScreenList(
-    productViewModel: ProductViewModel,
+fun CategoryScreenList(
+    categoryViewModel: CategoryViewModel,
     onNavigateToHome: () -> Unit,
     onNavigateToConfig: () -> Unit,
     onSignOutClick: () -> Unit
 ) {
 
     LaunchedEffect(Unit) {
-        productViewModel.loadProducts()
+        categoryViewModel.loadCategories()
     }
 
     BarNavigation(
@@ -65,7 +67,7 @@ fun ProductScreenList(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            RegistersHeader("Produtos Cadastrados")
+            RegistersHeader("Categorias Cadastradas")
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -73,23 +75,23 @@ fun ProductScreenList(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (!productViewModel.products.value.isNullOrEmpty()) {
+                if (!categoryViewModel.categories.value.isNullOrEmpty()) {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(productViewModel.products.value!!) { product ->
-                            ProductsItemRow(
-                                product = product
+                        items(categoryViewModel.categories.value!!) { category ->
+                            CategoriesItemRow(
+                                category = category
                             )
                         }
                     }
                 } else {
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        text = "Nenhum produto cadastrado",
+                        text = "Nenhuma categoria cadastrada",
                         fontSize = 16.sp,
                         color = Color.Gray
                     )
@@ -100,8 +102,8 @@ fun ProductScreenList(
 }
 
 @Composable
-fun ProductsItemRow(
-    product: ProductUiState
+fun CategoriesItemRow(
+    category: CategoryUiState
 ) {
 
     Box(
@@ -121,13 +123,12 @@ fun ProductsItemRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = rememberAsyncImagePainter(product.link),
-                contentDescription = product.name,
+                painter = rememberAsyncImagePainter(category.link),
+                contentDescription = category.category,
                 modifier = Modifier
-                    .size(95.dp)
-                    .border(1.dp, Color.LightGray, RoundedCornerShape(12.dp))
+                    .size(60.dp)
                     .aspectRatio(1f)
-                    .clip(RoundedCornerShape(12.dp)),
+                    .clip(RoundedCornerShape(100)),
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(10.dp))
@@ -137,19 +138,9 @@ fun ProductsItemRow(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = product.name,
+                    text = category.category,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
-                )
-                Text(
-                    text = product.category,
-                    fontSize = 14.sp,
-                    color = Color.DarkGray
-                )
-                Text(
-                    text = product.value,
-                    fontSize = 16.sp,
-                    color = DarkColorError
                 )
             }
         }
@@ -158,14 +149,12 @@ fun ProductsItemRow(
 
 @Preview
 @Composable
-private fun PreviewProductScreenList() {
-    val productUiState = ProductUiState(
-        name = "Pote com tampa hermética de vidro temperado",
+private fun PreviewCategoryScreenList() {
+    val categoryUiState = CategoryUiState(
         category = "Cozinha",
-        value = "R$ 19,99",
-        link = "https://firebasestorage.googleapis.com/v0/b/deliverypds-2024.firebasestorage.app/o/pote.jpg?alt=media&token=8e098948-5742-4be8-8eab-99fc084b56da" // Link de imagem simulada
+        link = "" // Link de imagem simulada
     )
-    ProductsItemRow(
-        product = productUiState
+    CategoriesItemRow(
+        category = categoryUiState
     )
 }

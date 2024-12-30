@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import com.codek.deliverypds.ui.login.state.LoginState
 import com.codek.deliverypds.ui.registers.address.state.AddressUiState
+import com.codek.deliverypds.ui.registers.category.state.CategoryUiState
 import com.codek.deliverypds.ui.registers.product.state.ProductUiState
 import com.codek.deliverypds.ui.registers.user.state.UserUiState
 import com.google.firebase.auth.FirebaseAuth
@@ -67,7 +68,6 @@ class FirestoreRepository(
                 .document("User")
                 .set(userMap)
                 .await()
-
             Log.d("FirestoreRepository", "Registro salvo com sucesso na coleção $userEmail")
         } catch (e: Exception) {
             Log.e("FirestoreRepository", "Erro ao salvar registro", e)
@@ -124,7 +124,6 @@ class FirestoreRepository(
                 .document(addressId)
                 .set(addressMap)
                 .await()
-
             Log.d("FirestoreRepository", "Registro salvo com sucesso na coleção $userEmail")
         } catch (e: Exception) {
             Log.e("FirestoreRepository", "Erro ao salvar registro", e)
@@ -144,6 +143,7 @@ class FirestoreRepository(
             val productMap = mapOf(
                 "nome" to product.name,
                 "categoria" to product.category,
+                "categoriaID" to product.categoryID,
                 "valor" to product.value,
                 "link" to product.link
             )
@@ -153,7 +153,6 @@ class FirestoreRepository(
                 .document(productId)
                 .set(productMap)
                 .await()
-
             Log.d("FirestoreRepository", "Registro salvo com sucesso na coleção $userEmail")
         } catch (e: Exception) {
             Log.e("FirestoreRepository", "Erro ao salvar registro", e)
@@ -161,7 +160,7 @@ class FirestoreRepository(
     }
 
     // Função para listar todos os produtos cadastrados no Firestore
-    suspend fun listarProdutos(): List<ProductUiState> {
+    suspend fun listarProducts(): List<ProductUiState> {
         return try {
             val userEmail = firebaseAuth.currentUser?.email
                 ?: throw Exception("Usuário não está logado")
@@ -172,7 +171,6 @@ class FirestoreRepository(
                 .collection("SubProducts")
                 .get()
                 .await()
-
             // Converte os documentos em uma lista de objetos ProductUiState
             val productList = querySnapshot.documents.mapNotNull { documentSnapshot ->
                 val data = documentSnapshot.data
@@ -185,11 +183,76 @@ class FirestoreRepository(
                     )
                 }
             }
-
             Log.d("FirestoreRepository", "Produtos listados com sucesso")
             productList
         } catch (e: Exception) {
             Log.e("FirestoreRepository", "Erro ao listar produtos", e)
+            emptyList()  // Retorna uma lista vazia em caso de erro
+        }
+    }
+
+    // Salvar registro no Firestore
+    suspend fun salvarCategory(category: CategoryUiState) {
+        try {
+            val userEmail = firebaseAuth.currentUser?.email
+                ?: throw Exception("Usuário não está logado")
+            val categoriesSnapshot = firebaseFirestore.collection(userEmail)
+                .document("Category")
+                .collection("SubCategories")
+                .get()
+                .await()
+            val nextItemID = (categoriesSnapshot.size() + 1).toString()
+            val categoryId = firebaseFirestore.collection(userEmail)
+                .document("Category")
+                .collection("subcollection")
+                .document()
+                .id
+            val categoryMap = mapOf(
+                "itemID" to nextItemID,
+                "categoria" to category.category,
+                "link" to category.link
+            )
+            firebaseFirestore.collection(userEmail)
+                .document("Category")
+                .collection("SubCategories")
+                .document(categoryId)
+                .set(categoryMap)
+                .await()
+            Log.d("FirestoreRepository", "Registro salvo com sucesso na coleção $userEmail")
+        } catch (e: Exception) {
+            Log.e("FirestoreRepository", "Erro ao salvar registro", e)
+        }
+    }
+
+    // Função para listar todas as categorias cadastrados no Firestore
+    suspend fun listarCategories(): List<CategoryUiState> {
+        return try {
+            val userEmail = firebaseAuth.currentUser?.email
+                ?: throw Exception("Usuário não está logado")
+
+            // Busca todos os documentos na coleção "SubCategories" do usuário
+            val querySnapshot = firebaseFirestore.collection(userEmail)
+                .document("Category")
+                .collection("SubCategories")
+                .get()
+                .await()
+
+            // Converte os documentos em uma lista de objetos CategoryUiState
+            val categoryList = querySnapshot.documents.mapNotNull { documentSnapshot ->
+                val data = documentSnapshot.data
+                data?.let {
+                    CategoryUiState(
+                        itemID = it["itemID"] as? String ?: "",
+                        category = it["categoria"] as? String ?: "",
+                        link = it["link"] as? String ?: ""
+                    )
+                }
+            }
+
+            Log.d("FirestoreRepository", "Categorias listadas com sucesso")
+            categoryList
+        } catch (e: Exception) {
+            Log.e("FirestoreRepository", "Erro ao listar categorias", e)
             emptyList()  // Retorna uma lista vazia em caso de erro
         }
     }
@@ -207,11 +270,11 @@ class StorageRepository(
                 val storageRef: StorageReference = firebaseStorage.reference
 
                 // Referência para o arquivo que será armazenado no Storage
-                val photoRef: StorageReference = storageRef.child("/$fileName.jpg")
+                val photoRef: StorageReference = storageRef.child("/$fileName.png")
 
                 // Convertendo o Bitmap para um array de bytes
                 val baos = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
                 val data = baos.toByteArray()
 
                 // Fazendo o upload do arquivo

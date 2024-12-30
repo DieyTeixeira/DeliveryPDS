@@ -11,18 +11,22 @@ import com.codek.deliverypds.app.animations.popExitTransition
 import com.codek.deliverypds.app.repository.AuthRepository
 import com.codek.deliverypds.ui.config.viewmodel.RegistersViewModel
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
-import com.codek.deliverypds.ui.registers.category.screen.CategoryScreen
+import com.codek.deliverypds.ui.registers.category.screen.CategoryScreenList
+import com.codek.deliverypds.ui.registers.category.viewmodel.CategoryViewModel
+import com.codek.deliverypds.ui.registers.product.screen.ProductScreenEdit
+import com.codek.deliverypds.ui.registers.product.screen.ProductScreenList
+import com.codek.deliverypds.ui.registers.product.viewmodel.ProductViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
-fun NavGraphBuilder.categoryScreen(
-    registersViewModel: RegistersViewModel,
+fun NavGraphBuilder.categoryScreenList(
+    categoryViewModel: CategoryViewModel,
     onNavigateToHome: () -> Unit,
     onNavigateToConfig: () -> Unit,
     onSignOut: () -> Unit
 ) {
     composable(
-        route = Screen.Category.route,
+        route = Screen.CategoryList.route,
         enterTransition = { enterTransition() },
         exitTransition = { exitTransition() },
         popEnterTransition = { popEnterTransition() },
@@ -33,8 +37,8 @@ fun NavGraphBuilder.categoryScreen(
         val viewModel = LoginViewModel(authRepository)
         val scope = rememberCoroutineScope()
 
-        CategoryScreen(
-            registersViewModel = registersViewModel,
+        CategoryScreenList(
+            categoryViewModel = categoryViewModel,
             onNavigateToHome = {
                 onNavigateToHome()
             },

@@ -41,12 +41,14 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.codek.deliverypds.R
 import com.codek.deliverypds.ui.config.viewmodel.RegistersViewModel
 import java.io.InputStream
 
@@ -78,6 +80,13 @@ fun RegistersPhotoPicker(onImageSelected: (Bitmap?) -> Unit) {
             ),
         contentAlignment = Alignment.Center
     ) {
+        if (imageUri != null) {
+            Image(
+                painter = painterResource(id = R.drawable.fundo),
+                contentDescription = "Fundo PNG",
+                modifier = Modifier.size(150.dp)
+            )
+        }
         AsyncImage(
             modifier = Modifier
                 .size(150.dp)

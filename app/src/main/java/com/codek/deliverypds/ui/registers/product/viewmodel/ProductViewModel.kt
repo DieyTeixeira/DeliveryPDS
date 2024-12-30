@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codek.deliverypds.app.repository.FirestoreRepository
+import com.codek.deliverypds.ui.registers.category.state.CategoryUiState
 import com.codek.deliverypds.ui.registers.product.state.MessageProductState
 import com.codek.deliverypds.ui.registers.product.state.ProductUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,27 +20,38 @@ class ProductViewModel(private val firestoreRepository: FirestoreRepository) : V
     private val _products = MutableLiveData<List<ProductUiState>>()
     val products: LiveData<List<ProductUiState>> get() = _products
 
+    private val _categories = MutableStateFlow<List<CategoryUiState>>(emptyList())
+    val categories: StateFlow<List<CategoryUiState>> get() = _categories
+
     private val _message = MutableStateFlow<MessageProductState?>(null)
     val message: StateFlow<MessageProductState?> get() = _message
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
 
-    fun updateName(product_name: String) { _productState.value = _productState.value.copy(name = product_name) }
-    fun updateCategory(product_category: String) { _productState.value = _productState.value.copy(category = product_category) }
-    fun updateValue(product_value: String) { _productState.value = _productState.value.copy(value = product_value) }
-    fun updateLink(product_link: String) { _productState.value = _productState.value.copy(link = product_link) }
+    fun updateProductName(product_name: String) { _productState.value = _productState.value.copy(name = product_name) }
+    fun updateProductCategory(product_category: String) { _productState.value = _productState.value.copy(category = product_category) }
+    fun updateProductValue(product_value: String) { _productState.value = _productState.value.copy(value = product_value) }
+    fun updateProductLink(product_link: String) { _productState.value = _productState.value.copy(link = product_link) }
+    fun updateSelectedCategory(category: String, categoryID: String) { _productState.value = _productState.value.copy(category = category, categoryID = categoryID) }
 
     fun loadProducts() {
         viewModelScope.launch {
-            val productList = firestoreRepository.listarProdutos()
+            val productList = firestoreRepository.listarProducts()
             _products.postValue(productList)
+        }
+    }
+
+    fun loadCategories() {
+        viewModelScope.launch {
+            val categoryList = firestoreRepository.listarCategories()
+            _categories.value = categoryList
         }
     }
 
     fun salvarProduct() {
         if (_productState.value.name.isBlank() || _productState.value.value.isBlank() || _productState.value.category.isBlank()) {
-            _message.value = MessageProductState.Error("Por favor, insira todos os campos!")
+            _message.value = MessageProductState.Error("Por favor, não deixe campos vazios!")
             return
         }
 

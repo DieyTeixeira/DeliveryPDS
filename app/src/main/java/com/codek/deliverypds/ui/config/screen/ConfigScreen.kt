@@ -37,8 +37,9 @@ fun ConfigScreen(
     val destinations = listOf(
         "Usuário" to Icons.Outlined.AccountCircle,
         "Endereços" to Icons.Outlined.Home,
-        "Categorias" to Icons.Outlined.ListAlt,
+        "CategoriasEdit" to Icons.Outlined.ListAlt,
         "ProdutosEdit" to Icons.Outlined.ShoppingBasket,
+        "CategoriasList" to Icons.Outlined.ListAlt,
         "ProdutosList" to Icons.Outlined.ShoppingBasket
     )
 

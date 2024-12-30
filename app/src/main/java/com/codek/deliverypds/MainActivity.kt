@@ -20,7 +20,9 @@ import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
 import com.codek.deliverypds.ui.payment.navigation.paymentScreen
 import com.codek.deliverypds.ui.registers.address.navigation.addressScreen
 import com.codek.deliverypds.ui.registers.address.viewmodel.AddressViewModel
-import com.codek.deliverypds.ui.registers.category.navigation.categoryScreen
+import com.codek.deliverypds.ui.registers.category.navigation.categoryScreenEdit
+import com.codek.deliverypds.ui.registers.category.navigation.categoryScreenList
+import com.codek.deliverypds.ui.registers.category.viewmodel.CategoryViewModel
 import com.codek.deliverypds.ui.registers.product.navigation.productScreenEdit
 import com.codek.deliverypds.ui.registers.product.navigation.productScreenList
 import com.codek.deliverypds.ui.registers.product.viewmodel.ProductViewModel
@@ -41,7 +43,8 @@ sealed class Screen(val route: String) {
     object Payment : Screen("payment")
     object User : Screen("user")
     object Address : Screen("address")
-    object Category : Screen("category")
+    object CategoryEdit : Screen("categoryedit")
+    object CategoryList : Screen("categorylist")
     object ProductEdit : Screen("productedit")
     object ProductList : Screen("productlist")
 }
@@ -67,6 +70,7 @@ class MainActivity : ComponentActivity() {
         val userViewModel: UserViewModel by viewModel()
         val addressViewModel: AddressViewModel by viewModel()
         val productViewModel: ProductViewModel by viewModel()
+        val categoryViewModel: CategoryViewModel by viewModel()
 
         enableEdgeToEdge()
         setContent {
@@ -117,8 +121,9 @@ class MainActivity : ComponentActivity() {
                         onSignOut = { navController.navigateToScreen("login", "config") },
                         onNavigateToUser = { navController.navigateToScreen("user", "config") },
                         onNavigateToAddress = { navController.navigateToScreen("address", "config") },
-                        onNavigateToCategory = { navController.navigateToScreen("category", "config") },
+                        onNavigateToCategoryEdit = { navController.navigateToScreen("categoryedit", "config") },
                         onNavigateToProductEdit = { navController.navigateToScreen("productedit", "config") },
+                        onNavigateToCategoryList = { navController.navigateToScreen("categorylist", "config") },
                         onNavigateToProductList = { navController.navigateToScreen("productlist", "config") }
                     )
                     userScreen(
@@ -140,11 +145,18 @@ class MainActivity : ComponentActivity() {
                         onNavigateToConfig = { navController.navigateToScreen("config", "productlist") },
                         onSignOut = { navController.navigateToScreen("login", "productlist") }
                     )
-                    categoryScreen(
+                    categoryScreenEdit(
                         registersViewModel = registersViewModel,
-                        onNavigateToHome = { navController.navigateToScreen("home", "category") },
-                        onNavigateToConfig = { navController.navigateToScreen("config", "category") },
-                        onSignOut = { navController.navigateToScreen("login", "category") }
+                        categoryViewModel = categoryViewModel,
+                        onNavigateToHome = { navController.navigateToScreen("home", "categoryedit") },
+                        onNavigateToConfig = { navController.navigateToScreen("config", "categoryedit") },
+                        onSignOut = { navController.navigateToScreen("login", "categoryedit") }
+                    )
+                    categoryScreenList(
+                        categoryViewModel = categoryViewModel,
+                        onNavigateToHome = { navController.navigateToScreen("home", "categorylist") },
+                        onNavigateToConfig = { navController.navigateToScreen("config", "categorylist") },
+                        onSignOut = { navController.navigateToScreen("login", "categorylist") }
                     )
                     addressScreen(
                         addressViewModel = addressViewModel,

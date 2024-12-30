@@ -9,6 +9,7 @@ import com.codek.deliverypds.ui.config.viewmodel.RegistersViewModel
 import com.codek.deliverypds.ui.home.viewmodel.HomeViewModel
 import com.codek.deliverypds.ui.login.viewmodel.LoginViewModel
 import com.codek.deliverypds.ui.registers.address.viewmodel.AddressViewModel
+import com.codek.deliverypds.ui.registers.category.viewmodel.CategoryViewModel
 import com.codek.deliverypds.ui.registers.product.viewmodel.ProductViewModel
 import com.codek.deliverypds.ui.registers.user.viewmodel.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -30,5 +31,6 @@ val appModule = module {
     viewModel { UserViewModel(get()) } // firebase firestore
     viewModel { AddressViewModel(get()) } // firebase firestore
     viewModel { ProductViewModel(get()) } // firebase firestore
+    viewModel { CategoryViewModel(get()) } // firebase firestore
 
 }
